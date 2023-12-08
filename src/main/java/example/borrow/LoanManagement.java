@@ -1,31 +1,34 @@
-package com.abhinav.app.borrow;
+package example.borrow;
 
-import com.abhinav.app.inventory.BookService;
+import example.inventory.BookManagement;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class LoanService {
+public class LoanManagement {
 
     private final LoanRepository loanRepository;
-    private final BookService books;
+    private final BookManagement books;
+    private final LoanMapper mapper;
 
     /**
      * Borrow a book.
      *
      * @param barcode Unique identifier of the book
      */
-    public Loan checkout(String barcode) {
+    public LoanDto checkout(String barcode) {
         books.issue(barcode);
         var loan = Loan.of(barcode);
-        return loanRepository.save(loan);
+        var savedLoan = loanRepository.save(loan);
+        return mapper.toDto(savedLoan);
     }
 
     /**
@@ -33,14 +36,22 @@ public class LoanService {
      *
      * @param loanId Unique identifier of the book loan
      */
-    public Loan checkin(Long loanId) {
+    public LoanDto checkin(Long loanId) {
         var loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new IllegalArgumentException("No loan found"));
+        books.release(loan.getBookBarcode());
         loan.complete();
-        return loanRepository.save(loan);
+        return mapper.toDto(loanRepository.save(loan));
     }
 
+    @Transactional(readOnly = true)
     public List<LoanWithBookDto> activeLoans() {
         return loanRepository.findLoansWithStatus(Loan.LoanStatus.ACTIVE);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<LoanDto> locate(Long loanId) {
+        return loanRepository.findById(loanId)
+                .map(mapper::toDto);
     }
 }

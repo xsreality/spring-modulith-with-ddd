@@ -1,4 +1,4 @@
-package com.abhinav.app.inventory;
+package example.inventory;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +9,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
-class BookServiceIT {
+class BookManagementIT {
 
     @Autowired
-    BookService bookService;
+    BookManagement bookManagement;
 
     @Test
     void testAddBookToInventory() {
@@ -21,8 +21,8 @@ class BookServiceIT {
 
     @Test
     void shouldListIssuedBooks() {
-        var books = bookService.issuedBooks();
+        var books = bookManagement.issuedBooks();
         assertThat(books).hasSize(1);
-        assertThat(books.get(0).isIssued()).isTrue();
+        assertThat(books.get(0).status()).isEqualTo(Book.BookStatus.ISSUED);
     }
 }

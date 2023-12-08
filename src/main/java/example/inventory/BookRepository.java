@@ -1,4 +1,4 @@
-package com.abhinav.app.inventory;
+package example.inventory;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

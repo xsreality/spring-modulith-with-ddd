@@ -1,4 +1,4 @@
-package com.abhinav.app.borrow;
+package example.borrow;
 
 import java.time.LocalDate;
 
@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Loan {
+class Loan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -73,5 +73,4 @@ public class Loan {
     public enum LoanStatus {
         ACTIVE, OVERDUE, COMPLETED
     }
-
 }

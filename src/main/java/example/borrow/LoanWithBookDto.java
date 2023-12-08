@@ -1,4 +1,4 @@
-package com.abhinav.app.borrow;
+package example.borrow;
 
 import java.time.LocalDate;
 

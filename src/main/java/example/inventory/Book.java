@@ -1,4 +1,4 @@
-package com.abhinav.app.inventory;
+package example.inventory;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -11,16 +11,15 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"barcode"}))
-public class Book {
+class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,11 +39,14 @@ public class Book {
     @Enumerated(EnumType.STRING)
     private BookStatus status;
 
-    public boolean isAvailable() {
+    @Version
+    private Long version;
+
+    public boolean available() {
         return BookStatus.AVAILABLE.equals(this.status);
     }
 
-    public boolean isIssued() {
+    public boolean issued() {
         return BookStatus.ISSUED.equals(this.status);
     }
 
@@ -57,7 +59,7 @@ public class Book {
     }
 
     public Book markIssued() {
-        if (this.status.equals(BookStatus.ISSUED)) {
+        if (issued()) {
             throw new IllegalStateException("Book is already issued!");
         }
         this.status = BookStatus.ISSUED;
@@ -65,6 +67,9 @@ public class Book {
     }
 
     public Book markAvailable() {
+        if (available()) {
+            throw new IllegalStateException("Book is already available!");
+        }
         this.status = BookStatus.AVAILABLE;
         return this;
     }
