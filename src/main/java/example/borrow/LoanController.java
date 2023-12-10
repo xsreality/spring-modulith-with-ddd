@@ -20,7 +20,7 @@ class LoanController {
 
     @PostMapping("/loans")
     ResponseEntity<LoanDto> checkoutBook(@RequestBody CheckoutRequest request) {
-        String barcode = request.barcode();
+        var barcode = request.barcode();
         var loanDto = loans.checkout(barcode);
         return ResponseEntity.ok(loanDto);
     }
