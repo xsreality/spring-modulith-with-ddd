@@ -1,13 +1,13 @@
 package example.borrow;
 
-import example.inventory.BookManagement;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
+import example.borrow.Loan.LoanStatus;
+import example.inventory.BookManagement;
 import lombok.RequiredArgsConstructor;
 
 @Transactional
@@ -46,7 +46,7 @@ public class LoanManagement {
 
     @Transactional(readOnly = true)
     public List<LoanWithBookDto> activeLoans() {
-        return loanRepository.findLoansWithStatus(Loan.LoanStatus.ACTIVE);
+        return loanRepository.findLoansWithStatus(LoanStatus.ACTIVE);
     }
 
     @Transactional(readOnly = true)

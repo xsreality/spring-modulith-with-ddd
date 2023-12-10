@@ -58,7 +58,7 @@ public class BookManagement {
         var inventoryNumber = new Book.Barcode(barcode);
         var book = bookRepository.findByInventoryNumber(inventoryNumber)
                 .map(Book::markAvailable)
-                .orElseThrow(() -> new IllegalStateException("Book not found!"));
+                .orElseThrow(() -> new IllegalArgumentException("Book not found!"));
         bookRepository.save(book);
     }
 

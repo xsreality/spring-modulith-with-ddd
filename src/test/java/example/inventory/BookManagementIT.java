@@ -15,11 +15,6 @@ class BookManagementIT {
     BookManagement bookManagement;
 
     @Test
-    void testAddBookToInventory() {
-
-    }
-
-    @Test
     void shouldListIssuedBooks() {
         var books = bookManagement.issuedBooks();
         assertThat(books).hasSize(1);
