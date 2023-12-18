@@ -2,7 +2,9 @@ package example.borrow;
 
 import java.time.LocalDate;
 
-public record LoanDto(Long id, String bookBarcode, Long patronId,
+import example.borrow.Loan.Book;
+
+public record LoanDto(Long id, Book book, Long patronId,
                       LocalDate dateOfIssue, int loanDurationInDays,
                       LocalDate dateOfReturn, Loan.LoanStatus status) {
 }

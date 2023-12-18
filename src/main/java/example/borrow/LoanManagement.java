@@ -39,7 +39,7 @@ public class LoanManagement {
     public LoanDto checkin(Long loanId) {
         var loan = loanRepository.findById(loanId)
                 .orElseThrow(() -> new IllegalArgumentException("No loan found"));
-        books.release(loan.getBookBarcode());
+        books.release(loan.getBook().barcode());
         loan.complete();
         return mapper.toDto(loanRepository.save(loan));
     }

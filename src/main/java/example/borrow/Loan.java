@@ -2,6 +2,9 @@ package example.borrow;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,11 +14,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 class Loan {
 
@@ -23,7 +24,9 @@ class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String bookBarcode;
+    @Embedded
+    @AttributeOverride(name = "barcode", column = @Column(name = "book_barcode"))
+    private Book book;
 
     private Long patronId;
 
@@ -40,7 +43,7 @@ class Loan {
     private Long version;
 
     Loan(String bookBarcode) {
-        this.bookBarcode = bookBarcode;
+        this.book = new Book(bookBarcode);
         this.dateOfIssue = LocalDate.now();
         this.loanDurationInDays = 14;
         this.status = LoanStatus.ACTIVE;
@@ -72,5 +75,13 @@ class Loan {
 
     public enum LoanStatus {
         ACTIVE, OVERDUE, COMPLETED
+    }
+
+    /**
+     * Book modeled as a value object in the Loan module. It only includes one property.
+     *
+     * @param barcode The barcode of the book.
+     */
+    public record Book(String barcode) {
     }
 }

@@ -24,7 +24,7 @@ class LoanManagementIT {
     void shouldCreateLoanAndIssueBookOnCheckout() {
         var loanDto = loans.checkout("13268510");
         assertThat(loanDto.status()).isEqualTo(LoanStatus.ACTIVE);
-        assertThat(loanDto.bookBarcode()).isEqualTo("13268510");
+        assertThat(loanDto.book().barcode()).isEqualTo("13268510");
         assertThat(books.locate(1L).get().status()).hasToString("ISSUED");
     }
 
