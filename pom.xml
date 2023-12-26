@@ -16,7 +16,7 @@
 	<properties>
 		<java.version>21</java.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
-		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
+		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
 		<springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
 	</properties>
 
