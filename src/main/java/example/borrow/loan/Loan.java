@@ -1,10 +1,7 @@
-package example.borrow;
+package example.borrow.loan;
 
 import java.time.LocalDate;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -18,23 +15,25 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-class Loan {
+public class Loan {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Embedded
-    @AttributeOverride(name = "barcode", column = @Column(name = "book_barcode"))
-    private Book book;
+    private Long bookId;
 
     private Long patronId;
 
-    private LocalDate dateOfIssue;
+    private LocalDate dateOfCheckout;
+
+    private LocalDate dateOfHold;
+
+    private int holdDurationInDays;
 
     private int loanDurationInDays;
 
-    private LocalDate dateOfReturn;
+    private LocalDate dateOfCheckin;
 
     @Enumerated(EnumType.STRING)
     private LoanStatus status;
@@ -42,19 +41,23 @@ class Loan {
     @Version
     private Long version;
 
-    Loan(String bookBarcode) {
-        this.book = new Book(bookBarcode);
-        this.dateOfIssue = LocalDate.now();
-        this.loanDurationInDays = 14;
-        this.status = LoanStatus.ACTIVE;
+    Loan(Long bookId, LocalDate dateOfHold) {
+        this.bookId = bookId;
+        this.dateOfHold = dateOfHold;
+        this.holdDurationInDays = 3;
+        this.status = LoanStatus.HOLDING;
     }
 
-    public static Loan of(String bookBarcode) {
-        return new Loan(bookBarcode);
+    public static Loan of(Long bookId, LocalDate dateOfHold) {
+        return new Loan(bookId, dateOfHold);
     }
 
     public boolean isActive() {
         return LoanStatus.ACTIVE.equals(this.status);
+    }
+
+    public boolean isHolding() {
+        return LoanStatus.HOLDING.equals(this.status);
     }
 
     public boolean isOverdue() {
@@ -65,23 +68,24 @@ class Loan {
         return LoanStatus.COMPLETED.equals(this.status);
     }
 
-    public void complete() {
+    public void complete(LocalDate dateOfCheckin) {
         if (isCompleted()) {
             throw new IllegalStateException("Loan is not active!");
         }
         this.status = LoanStatus.COMPLETED;
-        this.dateOfReturn = LocalDate.now();
+        this.dateOfCheckin = dateOfCheckin;
+    }
+
+    public void activate(LocalDate dateOfCheckout) {
+        if (!isHolding()) {
+            throw new IllegalStateException("Loan is not holding!");
+        }
+        this.loanDurationInDays = 14;
+        this.dateOfCheckout = dateOfCheckout;
+        this.status = LoanStatus.ACTIVE;
     }
 
     public enum LoanStatus {
-        ACTIVE, OVERDUE, COMPLETED
-    }
-
-    /**
-     * Book modeled as a value object in the Loan module. It only includes one property.
-     *
-     * @param barcode The barcode of the book.
-     */
-    public record Book(String barcode) {
+        HOLDING, ACTIVE, OVERDUE, COMPLETED
     }
 }

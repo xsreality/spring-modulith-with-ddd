@@ -20,13 +20,13 @@ Run the application with the command: `mvn spring-boot:run`.
 ## Swagger REST API Docs
 Access the Swagger UI at http://localhost:8080/swagger-ui.html
 
-![image](https://github.com/xsreality/spring-modulith-with-ddd/assets/4991449/df13827e-dfe3-41a3-bec2-33f71288d3ad)
+![image](https://github.com/xsreality/spring-modulith-with-ddd/assets/4991449/c1cfedf5-97cd-4c22-948c-a6ba999ae4f4)
 
 ## Examples
 
 ### Add book to Library
 ```bash
-curl -X POST -H Content-Type:application/json http://localhost:8080/books \
+curl -X POST -H Content-Type:application/json http://localhost:8080/catalog/books \
   -d '{"title":"Sapiens","inventoryNumber":"12345","isbn":"9428104","author":"Yuval Noah Harari"}' | jq
 ```
 
@@ -35,21 +35,20 @@ Response:
 {
   "id": 1,
   "title": "Sapiens",
-  "inventoryNumber": {
+  "catalogNumber": {
     "barcode": "12345"
   },
   "isbn": "9428104",
   "author": {
     "name": "Yuval Noah Harari"
-  },
-  "status": "AVAILABLE"
+  }
 }
 ```
 
-### Checkout (borrow) a book
+### Place a book on hold (start the borrowing process)
 
 ```bash
-curl -X POST -H Content-Type:application/json http://localhost:8080/loans \
+curl -X POST -H Content-Type:application/json http://localhost:8080/borrow/loans \
   -d '{"barcode": "12345"}' | jq
 ```
 
@@ -57,11 +56,35 @@ Response:
 ```json
 {
   "id": 1,
-  "bookBarcode": "12345",
+  "bookId": 1,
   "patronId": null,
-  "dateOfIssue": "2023-12-10",
+  "dateOfHold": "2023-12-28",
+  "dateOfCheckout": null,
+  "holdDurationInDays": 3,
+  "loanDurationInDays": 0,
+  "dateOfCheckin": null,
+  "status": "HOLDING"
+}
+```
+
+
+### Checkout (collect) a book
+
+```bash
+curl -X POST http://localhost:8080/borrow/loans/1/checkout | jq
+```
+
+Response:
+```json
+{
+  "id": 1,
+  "bookId": 1,
+  "patronId": null,
+  "dateOfHold": "2023-12-28",
+  "dateOfCheckout": "2023-12-28",
+  "holdDurationInDays": 3,
   "loanDurationInDays": 14,
-  "dateOfReturn": null,
+  "dateOfCheckin": null,
   "status": "ACTIVE"
 }
 ```
@@ -69,18 +92,20 @@ Response:
 ### Checkin (return) a book
 
 ```bash
-curl -X DELETE http://localhost:8080/loans/1 | jq
+curl -X POST http://localhost:8080/borrow/loans/1/checkin | jq
 ```
 
 Response:
 ```json
 {
   "id": 1,
-  "bookBarcode": "12345",
+  "bookId": 1,
   "patronId": null,
-  "dateOfIssue": "2023-12-10",
+  "dateOfHold": "2023-12-28",
+  "dateOfCheckout": "2023-12-28",
+  "holdDurationInDays": 3,
   "loanDurationInDays": 14,
-  "dateOfReturn": "2023-12-10",
+  "dateOfCheckin": "2023-12-28",
   "status": "COMPLETED"
 }
 ```
