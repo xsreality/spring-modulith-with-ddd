@@ -5,8 +5,8 @@ Spring Boot, Spring Modulith and Domain Driven Design principles.
 
 The code is explained in a series of blog posts.
 
-1. [Building Modular Monolith Applications with Spring Boot and Domain Driven Design](https://itnext.io/building-modular-monolith-applications-with-spring-boot-and-domain-driven-design-d3299b300850) - First attempt at building a Modular Monolith code with only Spring Boot and DDD (does not use Spring Modulith). The code is available in branch [part-1-ddd-solution](https://github.com/xsreality/spring-modulith-with-ddd/tree/part-1-ddd-solution).
-2. [Improving Modular Monolith Applications with Spring Modulith](https://itnext.io/improving-modular-monolith-applications-with-spring-modulith-edecc787f63c) - In this blog, we rethink the domain model and apply eventual consistency with Spring Modulith to make the application easier to test, self-documenting and more maintainable. The code is available in branch [part-2-spring-modulith](https://github.com/xsreality/spring-modulith-with-ddd/tree/part-2-spring-modulith) and `main`.
+1. [Building Modular Monolith Applications with Spring Boot and Domain Driven Design](https://itnext.io/building-modular-monolith-applications-with-spring-boot-and-domain-driven-design-d3299b300850?sk=3c3179d82508b50cc490a2a47074804f) - First attempt at building a Modular Monolith code with only Spring Boot and DDD (does not use Spring Modulith). The code is available in branch [part-1-ddd-solution](https://github.com/xsreality/spring-modulith-with-ddd/tree/part-1-ddd-solution).
+2. [Improving Modular Monolith Applications with Spring Modulith](https://itnext.io/improving-modular-monolith-applications-with-spring-modulith-edecc787f63c?sk=051ea353e17154843886705fb90ed64a) - In this blog, we rethink the domain model and apply eventual consistency with Spring Modulith to make the application easier to test, self-documenting and more maintainable. The code is available in branch [part-2-spring-modulith](https://github.com/xsreality/spring-modulith-with-ddd/tree/part-2-spring-modulith) and `main`.
 3. TBA - Further improvements with Hexagonal architecture.
 
 ## Project Requirements
