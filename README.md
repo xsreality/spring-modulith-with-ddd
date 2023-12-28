@@ -14,6 +14,10 @@ The code is explained in a series of blog posts.
 * JDK 21
 * Spring Boot 3.2
 
+## Bounded Contexts
+
+![image](https://github.com/xsreality/spring-modulith-with-ddd/assets/4991449/2f8947e9-2630-411a-a14b-099f4bcfed89)
+
 ## Run the application
 
 Run the application with the command: `mvn spring-boot:run`.
