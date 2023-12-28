@@ -1,9 +1,8 @@
-package example.inventory;
+package example.catalog.internal;
 
-import example.inventory.Book.Barcode;
+import example.catalog.internal.CatalogBook.Barcode;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,32 +15,26 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-class BookController {
+class CatalogController {
 
-    private final BookManagement books;
+    private final CatalogManagement books;
 
-    @PostMapping("/books")
+    @PostMapping("/catalog/books")
     ResponseEntity<BookDto> addBookToInventory(@RequestBody AddBookRequest request) {
-        var bookDto = books.addToInventory(request.title(), new Barcode(request.inventoryNumber()), request.isbn(), request.author());
+        var bookDto = books.addToCatalog(request.title(), new Barcode(request.inventoryNumber()), request.isbn(), request.author());
         return ResponseEntity.ok(bookDto);
     }
 
-    @DeleteMapping("/books/{id}")
-    ResponseEntity<Void> removeBookFromInventory(@PathVariable("id") Long id) {
-        books.removeFromInventory(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/books/{id}")
+    @GetMapping("/catalog/books/{id}")
     ResponseEntity<BookDto> viewSingleBook(@PathVariable("id") Long id) {
         return books.locate(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/books")
-    ResponseEntity<List<BookDto>> viewIssuedBooks() {
-        return ResponseEntity.ok(books.issuedBooks());
+    @GetMapping("/catalog/books")
+    ResponseEntity<List<BookDto>> viewBooks() {
+        return ResponseEntity.ok(books.fetchBooks());
     }
 
     record AddBookRequest(String title, String inventoryNumber,

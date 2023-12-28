@@ -1,12 +1,13 @@
-package example.inventory;
+package example.borrow.loan;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingConstants;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
-interface BookMapper {
+public interface LoanMapper {
 
-    BookDto toDto(Book book);
-    Book toEntity(BookDto bookDto);
+    LoanDto toDto(Loan loan);
+
+    Loan toEntity(LoanDto loanDto);
 }
