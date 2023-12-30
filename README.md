@@ -40,7 +40,7 @@ Access the Swagger UI at http://localhost:8080/swagger-ui.html
 ### Add book to Library
 ```bash
 curl -X POST -H Content-Type:application/json http://localhost:8080/catalog/books \
-  -d '{"title":"Sapiens","inventoryNumber":"12345","isbn":"9428104","author":"Yuval Noah Harari"}' | jq
+  -d '{"title":"Sapiens","catalogNumber":"12345","isbn":"9780062316097","author":"Yuval Noah Harari"}' | jq
 ```
 
 Response:
@@ -69,7 +69,7 @@ Response:
 ```json
 {
   "id": 1,
-  "bookId": 1,
+  "bookBarcode": "12345",
   "patronId": 1,
   "dateOfHold": "2023-12-28",
   "dateOfCheckout": null,
@@ -91,7 +91,7 @@ Response:
 ```json
 {
   "id": 1,
-  "bookId": 1,
+  "bookBarcode": "12345",
   "patronId": 1,
   "dateOfHold": "2023-12-28",
   "dateOfCheckout": "2023-12-28",
@@ -112,7 +112,7 @@ Response:
 ```json
 {
   "id": 1,
-  "bookId": 1,
+  "bookBarcode": "12345",
   "patronId": 1,
   "dateOfHold": "2023-12-28",
   "dateOfCheckout": "2023-12-28",

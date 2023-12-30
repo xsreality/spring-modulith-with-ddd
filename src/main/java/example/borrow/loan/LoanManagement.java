@@ -40,7 +40,7 @@ public class LoanManagement {
         }
 
         var dateOfHold = LocalDate.now();
-        var loan = Loan.of(book.getId(), dateOfHold, patronId);
+        var loan = Loan.of(barcode, dateOfHold, patronId);
         var dto = mapper.toDto(loans.save(loan));
         events.publishEvent(
                 new BookPlacedOnHold(
@@ -61,7 +61,7 @@ public class LoanManagement {
         var loan = loans.findById(loanId)
                 .orElseThrow(() -> new IllegalArgumentException("No loan found"));
 
-        var book = books.findById(loan.getBookId())
+        var book = books.findByInventoryNumber(loan.getBookBarcode())
                 .orElseThrow(() -> new IllegalArgumentException("Book not found!"));
 
         if (!book.onHold()) {
@@ -88,9 +88,9 @@ public class LoanManagement {
         loan.complete(dateOfCheckin);
         var dto = mapper.toDto(loans.save(loan));
 
-        var book = books.findById(loan.getBookId())
+        var book = books.findByInventoryNumber(loan.getBookBarcode())
                 .orElseThrow(() -> new IllegalArgumentException("Book not found!"));
-        events.publishEvent(new BookReturned(loan.getBookId(), book.getIsbn(), book.getInventoryNumber().barcode(), loan.getPatronId(), dateOfCheckin));
+        events.publishEvent(new BookReturned(book.getId(), book.getIsbn(), book.getInventoryNumber().barcode(), loan.getPatronId(), dateOfCheckin));
         return dto;
     }
 

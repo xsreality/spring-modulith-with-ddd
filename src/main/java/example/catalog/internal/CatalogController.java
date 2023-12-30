@@ -21,7 +21,7 @@ class CatalogController {
 
     @PostMapping("/catalog/books")
     ResponseEntity<BookDto> addBookToInventory(@RequestBody AddBookRequest request) {
-        var bookDto = books.addToCatalog(request.title(), new Barcode(request.inventoryNumber()), request.isbn(), request.author());
+        var bookDto = books.addToCatalog(request.title(), new Barcode(request.catalogNumber()), request.isbn(), request.author());
         return ResponseEntity.ok(bookDto);
     }
 
@@ -37,7 +37,7 @@ class CatalogController {
         return ResponseEntity.ok(books.fetchBooks());
     }
 
-    record AddBookRequest(String title, String inventoryNumber,
+    record AddBookRequest(String title, String catalogNumber,
                           String isbn, String author) {
     }
 }

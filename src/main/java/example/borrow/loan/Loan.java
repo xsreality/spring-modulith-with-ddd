@@ -2,6 +2,9 @@ package example.borrow.loan;
 
 import java.time.LocalDate;
 
+import example.borrow.book.Book;
+import example.borrow.book.Book.Barcode;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -21,7 +24,8 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long bookId;
+    @Embedded
+    private Barcode bookBarcode;
 
     private Long patronId;
 
@@ -41,16 +45,16 @@ public class Loan {
     @Version
     private Long version;
 
-    Loan(Long bookId, LocalDate dateOfHold, Long patronId) {
-        this.bookId = bookId;
+    Loan(String barcode, LocalDate dateOfHold, Long patronId) {
+        this.bookBarcode = new Barcode(barcode);
         this.dateOfHold = dateOfHold;
         this.patronId = patronId;
         this.holdDurationInDays = 3;
         this.status = LoanStatus.HOLDING;
     }
 
-    public static Loan of(Long bookId, LocalDate dateOfHold, Long patronId) {
-        return new Loan(bookId, dateOfHold, patronId);
+    public static Loan of(String barcode, LocalDate dateOfHold, Long patronId) {
+        return new Loan(barcode, dateOfHold, patronId);
     }
 
     public boolean isActive() {
