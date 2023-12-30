@@ -14,6 +14,14 @@ The code is explained in a series of blog posts.
 * JDK 21
 * Spring Boot 3.2
 
+## The Business Problem
+
+1. The library consists of thousands of books. There can be multiple copies of the same book.
+2. Before being included in the library, every book receives a barcode stamped at the back or one of the end pages. This barcode number uniquely identifies the book.
+3. A patron of the library can make a request to place a book on hold by either locating the book in the library or directly going to the circulation desk and ask for a book by title. If book is available, the patron can proceed to checkout (collect) the book.
+4. The book is checked out for a fixed period of 2 weeks.
+5. To check in (return) the book, the patron can go to the circulation desk or drop it in the drop zone.
+
 ## Bounded Contexts
 
 ![image](https://github.com/xsreality/spring-modulith-with-ddd/assets/4991449/2f8947e9-2630-411a-a14b-099f4bcfed89)
