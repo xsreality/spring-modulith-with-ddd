@@ -54,7 +54,7 @@ Response:
 
 ```bash
 curl -X POST -H Content-Type:application/json http://localhost:8080/borrow/loans \
-  -d '{"barcode": "12345"}' | jq
+  -d '{"barcode": "12345", "patronId": 1}' | jq
 ```
 
 Response:

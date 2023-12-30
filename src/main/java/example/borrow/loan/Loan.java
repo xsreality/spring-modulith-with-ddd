@@ -41,15 +41,16 @@ public class Loan {
     @Version
     private Long version;
 
-    Loan(Long bookId, LocalDate dateOfHold) {
+    Loan(Long bookId, LocalDate dateOfHold, Long patronId) {
         this.bookId = bookId;
         this.dateOfHold = dateOfHold;
+        this.patronId = patronId;
         this.holdDurationInDays = 3;
         this.status = LoanStatus.HOLDING;
     }
 
-    public static Loan of(Long bookId, LocalDate dateOfHold) {
-        return new Loan(bookId, dateOfHold);
+    public static Loan of(Long bookId, LocalDate dateOfHold, Long patronId) {
+        return new Loan(bookId, dateOfHold, patronId);
     }
 
     public boolean isActive() {

@@ -30,7 +30,7 @@ class LoanIntegrationTests {
 
     @Test
     void shouldCreateLoanOnPlacingHold(Scenario scenario) {
-        scenario.stimulate(() -> loans.hold("13268510"))
+        scenario.stimulate(() -> loans.hold("13268510", 1L))
                 .andWaitForEventOfType(BookPlacedOnHold.class)
                 .toArriveAndVerify((event, dto) -> {
                     assertThat(event.inventoryNumber()).isEqualTo("13268510");

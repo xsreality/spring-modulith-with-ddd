@@ -31,7 +31,7 @@ public class LoanManagement {
      *
      * @param barcode Unique identifier of the book
      */
-    public LoanDto hold(String barcode) {
+    public LoanDto hold(String barcode, Long patronId) {
         var book = books.findByInventoryNumber(new Barcode(barcode))
                 .orElseThrow(() -> new IllegalArgumentException("Book not found!"));
 
@@ -40,7 +40,7 @@ public class LoanManagement {
         }
 
         var dateOfHold = LocalDate.now();
-        var loan = Loan.of(book.getId(), dateOfHold);
+        var loan = Loan.of(book.getId(), dateOfHold, patronId);
         var dto = mapper.toDto(loans.save(loan));
         events.publishEvent(
                 new BookPlacedOnHold(

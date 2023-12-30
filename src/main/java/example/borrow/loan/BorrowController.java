@@ -20,8 +20,7 @@ class BorrowController {
 
     @PostMapping("/borrow/loans")
     ResponseEntity<LoanDto> holdBook(@RequestBody HoldRequest request) {
-        var barcode = request.barcode();
-        var loanDto = loans.hold(barcode);
+        var loanDto = loans.hold(request.barcode(), request.patronId());
         return ResponseEntity.ok(loanDto);
     }
 
@@ -52,6 +51,6 @@ class BorrowController {
         return ResponseEntity.ok(loans.activeLoans());
     }
 
-    record HoldRequest(String barcode) {
+    record HoldRequest(String barcode, Long patronId) {
     }
 }
