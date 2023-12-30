@@ -51,7 +51,7 @@ Response:
   "catalogNumber": {
     "barcode": "12345"
   },
-  "isbn": "9428104",
+  "isbn": "9780062316097",
   "author": {
     "name": "Yuval Noah Harari"
   }
