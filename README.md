@@ -62,7 +62,7 @@ Response:
 {
   "id": 1,
   "bookId": 1,
-  "patronId": null,
+  "patronId": 1,
   "dateOfHold": "2023-12-28",
   "dateOfCheckout": null,
   "holdDurationInDays": 3,
@@ -84,7 +84,7 @@ Response:
 {
   "id": 1,
   "bookId": 1,
-  "patronId": null,
+  "patronId": 1,
   "dateOfHold": "2023-12-28",
   "dateOfCheckout": "2023-12-28",
   "holdDurationInDays": 3,
@@ -105,7 +105,7 @@ Response:
 {
   "id": 1,
   "bookId": 1,
-  "patronId": null,
+  "patronId": 1,
   "dateOfHold": "2023-12-28",
   "dateOfCheckout": "2023-12-28",
   "holdDurationInDays": 3,
