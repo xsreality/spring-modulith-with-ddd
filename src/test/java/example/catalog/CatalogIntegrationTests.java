@@ -4,17 +4,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.modulith.test.ApplicationModuleTest;
 import org.springframework.modulith.test.Scenario;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
 import example.catalog.internal.CatalogBook.Barcode;
 import example.catalog.internal.CatalogManagement;
+import example.catalog.internal.CatalogRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DirtiesContext
 @Transactional
 @ApplicationModuleTest
 class CatalogIntegrationTests {
@@ -27,9 +26,13 @@ class CatalogIntegrationTests {
     @Autowired
     CatalogManagement books;
 
+    @Autowired
+    CatalogRepository repository;
+
     @Test
     void shouldAddBookToInventory(Scenario scenario) {
         scenario.stimulate(() -> books.addToCatalog("A title", new Barcode("999"), "654", "An author"))
+                .andCleanup(bookDto -> repository.deleteById(bookDto.id()))
                 .andWaitForEventOfType(BookAddedToCatalog.class)
                 .toArriveAndVerify((event, dto) -> {
                     assertThat(event.title()).isEqualTo("A title");
@@ -43,6 +46,6 @@ class CatalogIntegrationTests {
     @Test
     void shouldListBooks() {
         var issuedBooks = books.fetchBooks();
-        assertThat(issuedBooks).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(issuedBooks).hasSizeBetween(3, 4);
     }
 }

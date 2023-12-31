@@ -8,11 +8,16 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+
+import example.borrow.book.Book;
 import example.borrow.book.BookCollected;
 import example.borrow.book.BookPlacedOnHold;
+import example.borrow.book.BookRepository;
 import example.borrow.book.BookReturned;
 import example.borrow.loan.Loan.LoanStatus;
 import example.borrow.loan.LoanManagement;
+import example.catalog.BookAddedToCatalog;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,6 +32,21 @@ class LoanIntegrationTests {
 
     @Autowired
     LoanManagement loans;
+
+    @Autowired
+    BookRepository books;
+
+    @Test
+    void shouldCreateBookOnNewBookInCatalog(Scenario scenario) {
+        scenario.publish(() -> new BookAddedToCatalog("A title", "9999", "73294", "An author"))
+                .customize(it -> it.atMost(Duration.ofMillis(200)))
+                .andWaitForStateChange(() -> books.findByInventoryNumber(new Book.Barcode("9999")))
+                .andVerify(book -> {
+                    //noinspection OptionalGetWithoutIsPresent
+                    assertThat(book.get().getInventoryNumber().barcode()).isEqualTo("9999");
+                    assertThat(book.get().getIsbn()).isEqualTo("73294");
+                });
+    }
 
     @Test
     void shouldCreateLoanOnPlacingHold(Scenario scenario) {
@@ -58,9 +78,15 @@ class LoanIntegrationTests {
                 });
     }
 
-//    @Test
-//    void shouldListActiveLoans() {
-//        var loans = this.loans.activeLoans();
-//        assertThat(loans).hasSize(1);
-//    }
+    @Test
+    void shouldListActiveLoans() {
+        var loans = this.loans.activeLoans();
+        assertThat(loans).isNotEmpty();
+    }
+
+    @Test
+    void shouldListOnHoldLoans() {
+        var loans = this.loans.onHoldLoans();
+        assertThat(loans).isNotEmpty();
+    }
 }
