@@ -1,4 +1,4 @@
-package example.borrow.loan;
+package example.borrow.loan.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import example.borrow.loan.application.LoanDto;
+import example.borrow.loan.application.LoanManagement;
 import lombok.RequiredArgsConstructor;
 
 @RestController

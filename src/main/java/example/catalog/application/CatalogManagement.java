@@ -1,4 +1,4 @@
-package example.catalog.internal;
+package example.catalog.application;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 import example.catalog.BookAddedToCatalog;
+import example.catalog.domain.CatalogBook;
+import example.catalog.domain.CatalogRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

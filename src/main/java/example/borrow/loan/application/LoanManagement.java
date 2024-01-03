@@ -1,4 +1,4 @@
-package example.borrow.loan;
+package example.borrow.loan.application;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
@@ -8,12 +8,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import example.borrow.book.Book.Barcode;
-import example.borrow.book.BookCollected;
-import example.borrow.book.BookPlacedOnHold;
-import example.borrow.book.BookRepository;
-import example.borrow.book.BookReturned;
-import example.borrow.loan.Loan.LoanStatus;
+import example.borrow.book.domain.Book.Barcode;
+import example.borrow.book.domain.BookCollected;
+import example.borrow.book.domain.BookPlacedOnHold;
+import example.borrow.book.domain.BookRepository;
+import example.borrow.book.domain.BookReturned;
+import example.borrow.loan.domain.Loan;
+import example.borrow.loan.domain.Loan.LoanStatus;
+import example.borrow.loan.domain.LoanRepository;
 import lombok.RequiredArgsConstructor;
 
 @Transactional

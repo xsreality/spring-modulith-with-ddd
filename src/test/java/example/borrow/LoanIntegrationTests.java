@@ -10,13 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 
-import example.borrow.book.Book;
-import example.borrow.book.BookCollected;
-import example.borrow.book.BookPlacedOnHold;
-import example.borrow.book.BookRepository;
-import example.borrow.book.BookReturned;
-import example.borrow.loan.Loan.LoanStatus;
-import example.borrow.loan.LoanManagement;
+import example.borrow.book.domain.Book;
+import example.borrow.book.domain.BookCollected;
+import example.borrow.book.domain.BookPlacedOnHold;
+import example.borrow.book.domain.BookRepository;
+import example.borrow.book.domain.BookReturned;
+import example.borrow.loan.domain.Loan.LoanStatus;
+import example.borrow.loan.application.LoanManagement;
 import example.catalog.BookAddedToCatalog;
 
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,9 +1,12 @@
-package example.borrow.loan;
+package example.borrow.loan.domain;
+
+import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
+import org.jmolecules.ddd.annotation.ValueObject;
 
 import java.time.LocalDate;
 
-import example.borrow.book.Book;
-import example.borrow.book.Book.Barcode;
+import example.borrow.book.domain.Book.Barcode;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,11 +18,13 @@ import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@AggregateRoot
 @Entity
 @Getter
 @NoArgsConstructor
 public class Loan {
 
+    @Identity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -90,6 +95,7 @@ public class Loan {
         this.status = LoanStatus.ACTIVE;
     }
 
+    @ValueObject
     public enum LoanStatus {
         HOLDING, ACTIVE, OVERDUE, COMPLETED
     }
