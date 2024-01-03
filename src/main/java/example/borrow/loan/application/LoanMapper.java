@@ -1,4 +1,4 @@
-package example.borrow.loan;
+package example.borrow.loan.application;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -6,7 +6,8 @@ import org.mapstruct.MappingConstants;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
-import example.borrow.book.Book;
+import example.borrow.book.domain.Book;
+import example.borrow.loan.domain.Loan;
 
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface LoanMapper {

@@ -1,4 +1,8 @@
-package example.borrow.book;
+package example.borrow.book.domain;
+
+import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
+import org.jmolecules.ddd.annotation.ValueObject;
 
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -13,12 +17,14 @@ import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@AggregateRoot
 @Entity
 @Getter
 @NoArgsConstructor
 @Table(name = "borrow_books", uniqueConstraints = @UniqueConstraint(columnNames = {"barcode"}))
 public class Book {
 
+    @Identity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -36,6 +42,7 @@ public class Book {
     @Version
     private Long version;
 
+    @ValueObject
     public record Barcode(String barcode) {
     }
 
@@ -82,6 +89,7 @@ public class Book {
         return this;
     }
 
+    @ValueObject
     public enum BookStatus {
         AVAILABLE, ON_HOLD, ISSUED
     }

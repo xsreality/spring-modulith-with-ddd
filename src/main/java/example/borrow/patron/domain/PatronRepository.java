@@ -1,4 +1,4 @@
-package example.borrow.patron;
+package example.borrow.patron.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

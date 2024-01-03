@@ -1,10 +1,15 @@
-package example.borrow.book;
+package example.borrow.book.application;
 
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import example.borrow.book.Book.Barcode;
+import example.borrow.book.domain.Book;
+import example.borrow.book.domain.Book.Barcode;
+import example.borrow.book.domain.BookCollected;
+import example.borrow.book.domain.BookPlacedOnHold;
+import example.borrow.book.domain.BookReturned;
+import example.borrow.book.domain.BookRepository;
 import example.catalog.BookAddedToCatalog;
 import lombok.RequiredArgsConstructor;
 

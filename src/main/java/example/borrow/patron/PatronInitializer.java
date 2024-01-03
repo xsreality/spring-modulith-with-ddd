@@ -4,7 +4,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import example.borrow.patron.Patron.Membership;
+import example.borrow.patron.domain.Patron;
+import example.borrow.patron.domain.Patron.Membership;
+import example.borrow.patron.domain.PatronRepository;
 import lombok.RequiredArgsConstructor;
 
 @Configuration

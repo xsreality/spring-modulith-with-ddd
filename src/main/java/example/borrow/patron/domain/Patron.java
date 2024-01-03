@@ -1,4 +1,4 @@
-package example.borrow.patron;
+package example.borrow.patron.domain;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

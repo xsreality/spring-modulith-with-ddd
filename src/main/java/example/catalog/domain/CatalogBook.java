@@ -1,4 +1,7 @@
-package example.catalog.internal;
+package example.catalog.domain;
+
+import org.jmolecules.ddd.annotation.AggregateRoot;
+import org.jmolecules.ddd.annotation.Identity;
 
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -13,12 +16,14 @@ import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@AggregateRoot
 @Entity
 @Getter
 @NoArgsConstructor
 @Table(name = "catalog_books", uniqueConstraints = @UniqueConstraint(columnNames = {"barcode"}))
 public class CatalogBook {
 
+    @Identity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

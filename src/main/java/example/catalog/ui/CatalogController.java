@@ -1,6 +1,6 @@
-package example.catalog.internal;
+package example.catalog.ui;
 
-import example.catalog.internal.CatalogBook.Barcode;
+import example.catalog.domain.CatalogBook.Barcode;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import example.catalog.application.BookDto;
+import example.catalog.application.CatalogManagement;
 import lombok.RequiredArgsConstructor;
 
 @RestController

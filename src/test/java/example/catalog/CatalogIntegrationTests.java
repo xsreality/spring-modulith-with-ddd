@@ -8,9 +8,9 @@ import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 
-import example.catalog.internal.CatalogBook.Barcode;
-import example.catalog.internal.CatalogManagement;
-import example.catalog.internal.CatalogRepository;
+import example.catalog.domain.CatalogBook.Barcode;
+import example.catalog.application.CatalogManagement;
+import example.catalog.domain.CatalogRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
