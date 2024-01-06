@@ -56,6 +56,10 @@
 		</dependency>
 		<dependency>
 			<groupId>org.jmolecules</groupId>
+			<artifactId>jmolecules-hexagonal-architecture</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jmolecules</groupId>
 			<artifactId>jmolecules-ddd</artifactId>
 		</dependency>
 
