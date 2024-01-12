@@ -1,49 +1,41 @@
 package example.borrowv2.infrastructure.out.persistence;
 
 import org.jmolecules.architecture.hexagonal.SecondaryAdapter;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import example.borrowv2.application.BorrowRepository;
-import example.borrowv2.domain.Book;
-import example.borrowv2.domain.Book.Barcode;
-import example.borrowv2.domain.BookPlacedOnHold;
-import example.borrowv2.domain.Hold;
+import example.borrowv2.domain.model.Book;
+import example.borrowv2.domain.model.Book.Barcode;
+import example.borrowv2.domain.model.Book.BookId;
+import example.borrowv2.domain.model.Book.BookStatus;
+import example.borrowv2.domain.service.BorrowRepository;
 import example.borrowv2.infrastructure.out.persistence.entity.BookEntity;
-import example.borrowv2.infrastructure.out.persistence.entity.HoldEntity;
 import lombok.RequiredArgsConstructor;
 
 @SecondaryAdapter
+@Transactional
 @Component
 @RequiredArgsConstructor
 public class BorrowRepositoryAdapter implements BorrowRepository {
 
     private final BookJpaRepository books;
-    private final HoldJpaRepository holds;
-    private final ApplicationEventPublisher events;
 
     @Override
-    public Book saveBook(Book book) {
-        return books.save(BookEntity.fromDomain(book))
-                .toDomain();
+    public void saveBook(Book book) {
+        books.save(BookEntity.fromDomain(book));
     }
 
-    @Override
-    public Hold saveHold(Hold hold) {
-        return holds.save(HoldEntity.fromDomain(hold))
-                .toDomain();
-    }
-
+    @Transactional(readOnly = true)
     @Override
     public Optional<Book> findAvailableBook(Barcode inventoryNumber) {
-        return books.findByInventoryNumberAndStatus(inventoryNumber, Book.BookStatus.AVAILABLE)
+        return books.findByInventoryNumberAndStatus(inventoryNumber, BookStatus.AVAILABLE)
                 .map(BookEntity::toDomain);
     }
 
     @Override
-    public void publish(BookPlacedOnHold event) {
-        events.publishEvent(event);
+    public Optional<Book> findById(BookId id) {
+        return books.findById(id.id()).map(BookEntity::toDomain);
     }
 }

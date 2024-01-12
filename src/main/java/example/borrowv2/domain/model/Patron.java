@@ -1,4 +1,4 @@
-package example.borrowv2.domain;
+package example.borrowv2.domain.model;
 
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Identifier;

@@ -3,12 +3,16 @@ package example.borrowv2.infrastructure.out.persistence.entity;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import example.borrowv2.domain.Book.BookId;
-import example.borrowv2.domain.Hold;
-import example.borrowv2.domain.Hold.HoldStatus;
-import example.borrowv2.domain.Patron.PatronId;
+import example.borrowv2.domain.model.Book.BookId;
+import example.borrowv2.domain.model.Hold;
+import example.borrowv2.domain.model.Hold.HoldStatus;
+import example.borrowv2.domain.model.Patron.PatronId;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
 import lombok.NoArgsConstructor;
@@ -21,9 +25,11 @@ public class HoldEntity {
     private UUID id;
 
     @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "bookId"))
     private BookId bookId;
 
     @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "patronId"))
     private PatronId patronId;
 
     private LocalDate dateOfCheckout;
@@ -36,7 +42,7 @@ public class HoldEntity {
 
     private int loanDurationInDays;
 
-    @Embedded
+    @Enumerated(EnumType.STRING)
     private HoldStatus status;
 
     @Version
@@ -65,6 +71,7 @@ public class HoldEntity {
         entity.holdDurationInDays = hold.getHoldDurationInDays();
         entity.loanDurationInDays = hold.getLoanDurationInDays();
         entity.status = hold.getStatus();
+        entity.version = 0L;
         return entity;
     }
 }

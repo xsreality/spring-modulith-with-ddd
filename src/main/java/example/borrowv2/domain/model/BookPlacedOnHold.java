@@ -1,13 +1,15 @@
-package example.borrowv2.domain;
+package example.borrowv2.domain.model;
 
 import org.jmolecules.event.annotation.DomainEvent;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @DomainEvent
-public record BookPlacedOnHold(String bookId,
+public record BookPlacedOnHold(UUID bookId,
+                               String title,
                                String isbn,
                                String inventoryNumber,
-                               String patronId,
+                               UUID patronId,
                                LocalDate dateOfHold) {
 }

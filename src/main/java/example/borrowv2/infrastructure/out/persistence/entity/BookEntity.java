@@ -2,9 +2,10 @@ package example.borrowv2.infrastructure.out.persistence.entity;
 
 import java.util.UUID;
 
-import example.borrowv2.domain.Book;
-import example.borrowv2.domain.Book.Barcode;
-import example.borrowv2.domain.Book.BookStatus;
+import example.borrowv2.domain.model.Book;
+import example.borrowv2.domain.model.Book.Barcode;
+import example.borrowv2.domain.model.Book.BookId;
+import example.borrowv2.domain.model.Book.BookStatus;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -33,8 +34,13 @@ public class BookEntity {
     @Version
     private Long version;
 
+    public BookEntity markOnHold() {
+        this.status = BookStatus.ON_HOLD;
+        return this;
+    }
+
     public Book toDomain() {
-        return new Book(title, inventoryNumber, isbn, status);
+        return new Book(new BookId(id), title, inventoryNumber, isbn, status);
     }
 
     public static BookEntity fromDomain(Book book) {
@@ -44,6 +50,7 @@ public class BookEntity {
         entity.inventoryNumber = book.getInventoryNumber();
         entity.isbn = book.getIsbn();
         entity.status = book.getStatus();
+        entity.version = 0L;
         return entity;
     }
 }

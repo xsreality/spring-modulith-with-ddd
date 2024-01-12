@@ -1,4 +1,4 @@
-package example.borrowv2.domain;
+package example.borrowv2.domain.model;
 
 import org.jmolecules.ddd.types.AggregateRoot;
 import org.jmolecules.ddd.types.Association;
@@ -8,8 +8,8 @@ import org.jmolecules.ddd.types.ValueObject;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import example.borrowv2.domain.Book.BookId;
-import example.borrowv2.domain.Patron.PatronId;
+import example.borrowv2.domain.model.Book.BookId;
+import example.borrowv2.domain.model.Patron.PatronId;
 import lombok.Getter;
 
 @Getter
@@ -46,7 +46,7 @@ public class Hold implements AggregateRoot<Hold, Hold.HoldId> {
     }
 
     public Hold(BookId bookId, PatronId patronId, LocalDate dateOfHold) {
-        new Hold(bookId, patronId, dateOfHold, null, 3, 0, null, HoldStatus.HOLDING);
+        this(bookId, patronId, dateOfHold, null, 3, 0, null, HoldStatus.HOLDING);
     }
 
     public enum HoldStatus implements ValueObject {
