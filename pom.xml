@@ -18,7 +18,7 @@
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
 		<springdoc-openapi-starter-webmvc-ui.version>2.3.0</springdoc-openapi-starter-webmvc-ui.version>
-		<spring-modulith-bom.version>1.1.1</spring-modulith-bom.version>
+		<spring-modulith-bom.version>1.1.2</spring-modulith-bom.version>
 		<jmolecules-bom.version>2023.1.1</jmolecules-bom.version>
 		<archunit.version>1.2.1</archunit.version>
 	</properties>
