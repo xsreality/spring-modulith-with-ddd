@@ -15,5 +15,5 @@ public class CatalogJMoleculesTests {
     ArchRule dddRules = JMoleculesDddRules.all();
 
     @ArchTest
-    ArchRule layering = JMoleculesArchitectureRules.ensureHexagonal();
+    ArchRule layering = JMoleculesArchitectureRules.ensureLayering();
 }

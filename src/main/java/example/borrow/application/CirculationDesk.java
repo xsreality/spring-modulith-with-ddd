@@ -1,6 +1,6 @@
 package example.borrow.application;
 
-import org.jmolecules.architecture.hexagonal.PrimaryPort;
+import org.jmolecules.architecture.hexagonal.Port;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,7 +16,7 @@ import example.borrow.domain.HoldEventPublisher;
 import example.borrow.domain.HoldRepository;
 import example.catalog.BookAddedToCatalog;
 
-@PrimaryPort
+@Port
 @Service
 @Transactional
 public class CirculationDesk {

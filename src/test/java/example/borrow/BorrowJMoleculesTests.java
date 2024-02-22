@@ -15,5 +15,5 @@ public class BorrowJMoleculesTests {
     ArchRule dddRules = JMoleculesDddRules.all();
 
     @ArchTest
-    ArchRule onion = JMoleculesArchitectureRules.ensureOnionSimple();
+    ArchRule hexagonal = JMoleculesArchitectureRules.ensureHexagonal();
 }

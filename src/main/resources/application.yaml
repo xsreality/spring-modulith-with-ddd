@@ -3,10 +3,3 @@ spring:
     open-in-view: false
     show-sql: true
     defer-datasource-initialization: true
-  h2:
-    console:
-      enabled: true
-logging:
-  level:
-    org.springframework.orm.jpa: DEBUG
-    org.hibernate.internal: DEBUG
