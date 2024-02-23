@@ -63,14 +63,15 @@ Response:
 
 ```bash
 curl -X POST -H Content-Type:application/json http://localhost:8080/borrow/holds \
-  -d '{"barcode": "12345", "patronId": 1}' | jq
+  -d '{"barcode": "12345", "patronId": "018dd2f7-b241-7d27-be99-45fb3f145ddf"}' | jq
 ```
 
 Response:
 ```json
 {
-  "id": "ac128fb7-3fbd-4cfa-b030-7508205aa84e",
+  "id": "8c8702af-9363-4953-94a5-2ddfa5aea631",
   "bookBarcode": "12345",
+  "patronId": "018dd2f7-b241-7d27-be99-45fb3f145ddf",
   "dateOfHold": "2024-02-22"
 }
 ```

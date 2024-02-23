@@ -15,6 +15,7 @@ import example.borrow.application.CirculationDesk;
 import example.borrow.application.HoldDto;
 import example.borrow.domain.Book;
 import example.borrow.domain.Hold;
+import example.borrow.domain.Patron.PatronId;
 import lombok.RequiredArgsConstructor;
 
 @PrimaryAdapter
@@ -26,7 +27,7 @@ public class CirculationDeskController {
 
     @PostMapping("/borrow/holds")
     ResponseEntity<HoldDto> holdBook(@RequestBody HoldRequest request) {
-        var command = new Hold.PlaceHold(new Book.Barcode(request.barcode()), LocalDate.now());
+        var command = new Hold.PlaceHold(new Book.Barcode(request.barcode()), LocalDate.now(), new PatronId(request.patronId()));
         var holdDto = circulationDesk.placeHold(command);
         return ResponseEntity.ok(holdDto);
     }
@@ -38,6 +39,6 @@ public class CirculationDeskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    record HoldRequest(String barcode, Long patronId) {
+    record HoldRequest(String barcode, UUID patronId) {
     }
 }

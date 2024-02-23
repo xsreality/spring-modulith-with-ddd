@@ -41,7 +41,7 @@ class CirculationDeskControllerIT {
                         .content("""
                                 {
                                   "barcode": "64321704",
-                                  "patronId": 5
+                                  "patronId": "018dd2f7-b241-7d27-be99-45fb3f145ddf"
                                 }
                                 """))
                 .andExpect(status().isOk());

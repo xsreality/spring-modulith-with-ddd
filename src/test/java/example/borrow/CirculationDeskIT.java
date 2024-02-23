@@ -19,6 +19,7 @@ import example.borrow.domain.BookPlacedOnHold;
 import example.borrow.domain.BookRepository;
 import example.borrow.domain.Hold;
 import example.borrow.domain.HoldRepository;
+import example.borrow.domain.Patron.PatronId;
 import example.borrow.infrastructure.out.events.BorrowEventsPublisher;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,12 +51,10 @@ class CirculationDeskIT {
 
     @Test
     void patronCanPlaceHold(Scenario scenario) {
-        var command = new Hold.PlaceHold(new Book.Barcode("13268510"), LocalDate.now());
+        var command = new Hold.PlaceHold(new Book.Barcode("13268510"), LocalDate.now(), new PatronId(UUID.randomUUID()));
         scenario.stimulate(() -> circulationDesk.placeHold(command))
                 .andWaitForEventOfType(BookPlacedOnHold.class)
-                .toArriveAndVerify((event, dto) -> {
-                    assertThat(event.inventoryNumber()).isEqualTo("13268510");
-                });
+                .toArriveAndVerify((event, dto) -> assertThat(event.inventoryNumber()).isEqualTo("13268510"));
     }
 
     @Test

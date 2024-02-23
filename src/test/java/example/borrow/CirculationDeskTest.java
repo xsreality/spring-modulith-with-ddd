@@ -18,6 +18,7 @@ import example.borrow.domain.BookRepository;
 import example.borrow.domain.Hold;
 import example.borrow.domain.HoldEventPublisher;
 import example.borrow.domain.HoldRepository;
+import example.borrow.domain.Patron.PatronId;
 
 import static example.borrow.domain.Book.BookStatus.AVAILABLE;
 import static example.borrow.domain.Book.BookStatus.ON_HOLD;
@@ -40,7 +41,7 @@ class CirculationDeskTest {
 
     @Test
     void patronCanPlaceHold() {
-        var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now());
+        var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId(UUID.randomUUID()));
         var holdDto = circulationDesk.placeHold(command);
         assertThat(holdDto.getBookBarcode()).isEqualTo("12345");
         assertThat(holdDto.getDateOfHold()).isNotNull();
@@ -48,7 +49,7 @@ class CirculationDeskTest {
 
     @Test
     void bookStatusUpdatedWhenPlacedOnHold() {
-        var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now());
+        var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId(UUID.randomUUID()));
         var hold = Hold.placeHold(command);
         circulationDesk.handle(new BookPlacedOnHold(hold.getId().id(), hold.getOnBook().barcode(), hold.getDateOfHold()));
         //noinspection OptionalGetWithoutIsPresent
@@ -136,7 +137,7 @@ class InMemoryHolds implements HoldRepository {
 //    private final Map<UUID, Checkout> checkouts = new HashMap<>();
 
     public InMemoryHolds() {
-        var hold = Hold.placeHold(new Hold.PlaceHold(new Book.Barcode("98765"), LocalDate.now()));
+        var hold = Hold.placeHold(new Hold.PlaceHold(new Book.Barcode("98765"), LocalDate.now(), new PatronId(UUID.randomUUID())));
         holds.put(hold.getId().id(), hold);
     }
 

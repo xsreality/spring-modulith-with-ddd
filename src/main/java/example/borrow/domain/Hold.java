@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 
+import example.borrow.domain.Patron.PatronId;
 import lombok.Getter;
 
 @Getter
@@ -15,16 +16,15 @@ public class Hold {
 
     private final Book.Barcode onBook;
 
-//    private final PatronId heldBy;
+    private final PatronId heldBy;
 
     private final LocalDate dateOfHold;
-
-//    private int holdDurationInDays;
 
     private Hold(PlaceHold placeHold) {
         this.id = new HoldId(UUID.randomUUID());
         this.onBook = placeHold.inventoryNumber();
         this.dateOfHold = placeHold.dateOfHold();
+        this.heldBy = placeHold.patronId();
     }
 
     public static Hold placeHold(PlaceHold command) {
@@ -38,6 +38,6 @@ public class Hold {
     public record HoldId(UUID id) implements Identifier {
     }
 
-    public record PlaceHold(Book.Barcode inventoryNumber, LocalDate dateOfHold) {
+    public record PlaceHold(Book.Barcode inventoryNumber, LocalDate dateOfHold, PatronId patronId) {
     }
 }

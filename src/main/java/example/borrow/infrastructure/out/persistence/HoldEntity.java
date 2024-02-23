@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import example.borrow.domain.Book;
 import example.borrow.domain.Hold;
+import example.borrow.domain.Patron.PatronId;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -19,6 +20,7 @@ import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Getter
 @Entity
 @NoArgsConstructor
@@ -33,6 +35,8 @@ public class HoldEntity {
     @AttributeOverride(name = "barcode", column = @Column(name = "bookBarcode"))
     private Book.Barcode book;
 
+    private UUID patronId;
+
     private LocalDate dateOfHold;
 
     @Enumerated(EnumType.STRING)
@@ -43,7 +47,7 @@ public class HoldEntity {
 
     public Hold toDomain() {
         if (this.status == HoldStatus.HOLDING) {
-            return Hold.placeHold(new Hold.PlaceHold(book, dateOfHold));
+            return Hold.placeHold(new Hold.PlaceHold(book, dateOfHold, new PatronId(patronId)));
         } else {
             return null;
         }
@@ -53,6 +57,7 @@ public class HoldEntity {
         var entity = new HoldEntity();
         entity.id = hold.getId().id();
         entity.book = hold.getOnBook();
+        entity.patronId = hold.getHeldBy().id();
         entity.dateOfHold = hold.getDateOfHold();
         entity.status = HoldStatus.HOLDING;
         entity.version = 0L;
