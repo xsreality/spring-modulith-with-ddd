@@ -6,8 +6,9 @@ Spring Boot, Spring Modulith and Domain Driven Design principles.
 The code is explained in a series of blog posts.
 
 1. [Building Modular Monolith Applications with Spring Boot and Domain Driven Design](https://itnext.io/building-modular-monolith-applications-with-spring-boot-and-domain-driven-design-d3299b300850?sk=3c3179d82508b50cc490a2a47074804f) - First attempt at building a Modular Monolith code with only Spring Boot and DDD (does not use Spring Modulith). The code is available in branch [part-1-ddd-solution](https://github.com/xsreality/spring-modulith-with-ddd/tree/part-1-ddd-solution).
-2. [Improving Modular Monolith Applications with Spring Modulith](https://itnext.io/improving-modular-monolith-applications-with-spring-modulith-edecc787f63c?sk=051ea353e17154843886705fb90ed64a) - In this blog, we rethink the domain model and apply eventual consistency with Spring Modulith to make the application easier to test, self-documenting and more maintainable. The code is available in branch [part-2-spring-modulith](https://github.com/xsreality/spring-modulith-with-ddd/tree/part-2-spring-modulith) and `main`.
-3. TBA - Further improvements with Hexagonal architecture.
+2. [Improving Modular Monolith Applications with Spring Modulith](https://itnext.io/improving-modular-monolith-applications-with-spring-modulith-edecc787f63c?sk=051ea353e17154843886705fb90ed64a) - In this blog, we rethink the domain model and apply eventual consistency with Spring Modulith to make the application easier to test, self-documenting and more maintainable. The code is available in branch [part-2-spring-modulith](https://github.com/xsreality/spring-modulith-with-ddd/tree/part-2-spring-modulith).
+3. [Adopting Domain-First Thinking in Modular Monolith with Hexagonal Architecture](https://itnext.io/adopting-domain-first-thinking-in-modular-monolith-with-hexagonal-architecture-f9e4921ac18d?sk=9364f2aac410c7b72e75e189bfa240e9) - In this blog, we re-implement the Borrow module with Hexagonal instead of Layered architecture. We demonstrate how absolutely no changes were needed in the Catalog module even though they are part of the same monolith code base. The code is available in branch [part-3-hexagonal-architecture](https://github.com/xsreality/spring-modulith-with-ddd/tree/part-3-hexagonal-architecture) and `main`.
+4. TBA - Authentication and Authorization
 
 ## Project Requirements
 
@@ -33,7 +34,7 @@ Run the application with the command: `mvn spring-boot:run`.
 ## Swagger REST API Docs
 Access the Swagger UI at http://localhost:8080/swagger-ui.html
 
-![image](https://github.com/xsreality/spring-modulith-with-ddd/assets/4991449/c1cfedf5-97cd-4c22-948c-a6ba999ae4f4)
+![image](https://github.com/xsreality/spring-modulith-with-ddd/assets/4991449/fcfb3e49-3024-4850-ba6e-dfeb9211caff)
 
 ## Examples
 
@@ -61,64 +62,16 @@ Response:
 ### Place a book on hold (start the borrowing process)
 
 ```bash
-curl -X POST -H Content-Type:application/json http://localhost:8080/borrow/loans \
-  -d '{"barcode": "12345", "patronId": 1}' | jq
+curl -X POST -H Content-Type:application/json http://localhost:8080/borrow/holds \
+  -d '{"barcode": "12345", "patronId": "018dd2f7-b241-7d27-be99-45fb3f145ddf"}' | jq
 ```
 
 Response:
 ```json
 {
-  "id": 1,
+  "id": "8c8702af-9363-4953-94a5-2ddfa5aea631",
   "bookBarcode": "12345",
-  "patronId": 1,
-  "dateOfHold": "2023-12-28",
-  "dateOfCheckout": null,
-  "holdDurationInDays": 3,
-  "loanDurationInDays": 0,
-  "dateOfCheckin": null,
-  "status": "HOLDING"
-}
-```
-
-
-### Checkout (collect) a book
-
-```bash
-curl -X POST http://localhost:8080/borrow/loans/1/checkout | jq
-```
-
-Response:
-```json
-{
-  "id": 1,
-  "bookBarcode": "12345",
-  "patronId": 1,
-  "dateOfHold": "2023-12-28",
-  "dateOfCheckout": "2023-12-28",
-  "holdDurationInDays": 3,
-  "loanDurationInDays": 14,
-  "dateOfCheckin": null,
-  "status": "ACTIVE"
-}
-```
-
-### Checkin (return) a book
-
-```bash
-curl -X POST http://localhost:8080/borrow/loans/1/checkin | jq
-```
-
-Response:
-```json
-{
-  "id": 1,
-  "bookBarcode": "12345",
-  "patronId": 1,
-  "dateOfHold": "2023-12-28",
-  "dateOfCheckout": "2023-12-28",
-  "holdDurationInDays": 3,
-  "loanDurationInDays": 14,
-  "dateOfCheckin": "2023-12-28",
-  "status": "COMPLETED"
+  "patronId": "018dd2f7-b241-7d27-be99-45fb3f145ddf",
+  "dateOfHold": "2024-02-22"
 }
 ```
