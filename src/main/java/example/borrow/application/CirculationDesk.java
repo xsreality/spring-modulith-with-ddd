@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import example.borrow.domain.Book;
+import example.borrow.domain.BookCheckedOut;
 import example.borrow.domain.BookPlacedOnHold;
 import example.borrow.domain.BookRepository;
 import example.borrow.domain.Hold;
@@ -47,14 +48,16 @@ public class CirculationDesk {
                 .map(HoldDto::from);
     }
 
-//    public Checkout checkout(Checkout.CheckoutBook command) {
-//        var hold = holds.findById(command.holdId())
-//                .orElseThrow(() -> new IllegalArgumentException("Hold not found!"));
-//
-//        return hold.checkout(command.dateOfCheckout())
-//                .then(holds::save)
-//                .then(eventPublisher::bookCheckedOut);
-//    }
+    public CheckoutDto checkout(Hold.Checkout command) {
+        var hold = holds.findById(command.holdId())
+                .orElseThrow(() -> new IllegalArgumentException("Hold not found!"));
+
+        return CheckoutDto.from(
+                hold.checkout(command)
+                .then(holds::save)
+                .then(eventPublisher::bookCheckedOut)
+        );
+    }
 
     @ApplicationModuleListener
     public void handle(BookPlacedOnHold event) {
@@ -62,6 +65,14 @@ public class CirculationDesk {
                 .map(Book::markOnHold)
                 .map(books::save)
                 .orElseThrow(() -> new IllegalArgumentException("Duplicate hold?"));
+    }
+
+    @ApplicationModuleListener
+    public void handle(BookCheckedOut event) {
+        books.findOnHoldBook(new Book.Barcode(event.inventoryNumber()))
+                .map(Book::markCheckedOut)
+                .map(books::save)
+                .orElseThrow(() -> new IllegalArgumentException("Book not on hold?"));
     }
 
     @ApplicationModuleListener

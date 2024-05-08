@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import example.borrow.application.CirculationDesk;
 import example.borrow.domain.Book;
+import example.borrow.domain.BookCheckedOut;
 import example.borrow.domain.BookPlacedOnHold;
 import example.borrow.domain.BookRepository;
 import example.borrow.domain.Hold;
@@ -149,7 +150,7 @@ class InMemoryHolds implements HoldRepository {
 
 //    @Override
 //    public Checkout save(Checkout checkout) {
-//        checkouts.put(checkout.getHoldId().id(), checkout);
+//        checkouts.put(checkout.getHoldId().holdId(), checkout);
 //        return checkout;
 //    }
 
@@ -177,6 +178,10 @@ class InMemoryHoldsEventPublisher implements HoldEventPublisher {
     @Override
     public void holdPlaced(BookPlacedOnHold event) {
         events.add(event);
+    }
+
+    @Override
+    public void bookCheckedOut(BookCheckedOut event) {
     }
 
 //    @Override

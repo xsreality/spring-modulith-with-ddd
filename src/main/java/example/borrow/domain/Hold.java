@@ -20,6 +20,8 @@ public class Hold {
 
     private final LocalDate dateOfHold;
 
+    private LocalDate dateOfCheckout;
+
     private Hold(PlaceHold placeHold) {
         this.id = new HoldId(UUID.randomUUID());
         this.onBook = placeHold.inventoryNumber();
@@ -31,6 +33,11 @@ public class Hold {
         return new Hold(command);
     }
 
+    public Hold checkout(Checkout command) {
+        this.dateOfCheckout = command.dateOfCheckout();
+        return this;
+    }
+
     public Hold then(UnaryOperator<Hold> function) {
         return function.apply(this);
     }
@@ -39,5 +46,9 @@ public class Hold {
     }
 
     public record PlaceHold(Book.Barcode inventoryNumber, LocalDate dateOfHold, PatronId patronId) {
+    }
+
+    public record Checkout(HoldId holdId, LocalDate dateOfCheckout, PatronId patronId) {
+
     }
 }

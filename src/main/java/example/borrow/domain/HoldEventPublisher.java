@@ -13,11 +13,11 @@ public interface HoldEventPublisher {
         return hold;
     }
 
-//    void bookCheckedOut(Checkout.BookCheckedOut event);
-//
-//    default Checkout bookCheckedOut(Checkout checkout) {
-//        Checkout.BookCheckedOut event = new Checkout.BookCheckedOut(checkout);
-//        this.bookCheckedOut(event);
-//        return checkout;
-//    }
+    void bookCheckedOut(BookCheckedOut event);
+
+    default Hold bookCheckedOut(Hold hold) {
+        BookCheckedOut event = new BookCheckedOut(hold.getId().id(), hold.getOnBook().barcode(), hold.getDateOfCheckout());
+        this.bookCheckedOut(event);
+        return hold;
+    }
 }

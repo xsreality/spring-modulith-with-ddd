@@ -49,6 +49,11 @@ public class Book {
         return this;
     }
 
+    public Book markCheckedOut() {
+        this.status = BookStatus.ISSUED;
+        return this;
+    }
+
     public record BookId(UUID id) implements Identifier {
     }
 

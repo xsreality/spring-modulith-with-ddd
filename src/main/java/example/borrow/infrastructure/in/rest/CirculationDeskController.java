@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.UUID;
 
+import example.borrow.application.CheckoutDto;
 import example.borrow.application.CirculationDesk;
 import example.borrow.application.HoldDto;
 import example.borrow.domain.Book;
@@ -32,6 +33,13 @@ public class CirculationDeskController {
         return ResponseEntity.ok(holdDto);
     }
 
+    @PostMapping("/borrow/holds/{id}/checkout")
+    ResponseEntity<CheckoutDto> checkoutBook(@PathVariable("id") UUID holdId, @RequestBody CheckoutRequest request) {
+        var command = new Hold.Checkout(new Hold.HoldId(holdId), LocalDate.now(), new PatronId(request.patronId()));
+        var checkoutDto = circulationDesk.checkout(command);
+        return ResponseEntity.ok(checkoutDto);
+    }
+
     @GetMapping("/borrow/holds/{id}")
     ResponseEntity<HoldDto> viewSingleHold(@PathVariable("id") UUID holdId) {
         return circulationDesk.locate(holdId)
@@ -40,5 +48,8 @@ public class CirculationDeskController {
     }
 
     record HoldRequest(String barcode, UUID patronId) {
+    }
+
+    record CheckoutRequest(UUID patronId) {
     }
 }
