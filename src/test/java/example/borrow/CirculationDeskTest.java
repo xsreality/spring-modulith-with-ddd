@@ -2,12 +2,11 @@ package example.borrow;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,29 +20,43 @@ import example.borrow.domain.HoldEventPublisher;
 import example.borrow.domain.HoldRepository;
 import example.borrow.domain.Patron.PatronId;
 
-import static example.borrow.domain.Book.BookStatus.AVAILABLE;
+import static example.borrow.domain.Book.BookStatus.ISSUED;
 import static example.borrow.domain.Book.BookStatus.ON_HOLD;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class CirculationDeskTest {
 
     CirculationDesk circulationDesk;
 
+    @Mock
     BookRepository bookRepository;
 
+    @Mock
     HoldRepository holdRepository;
+
+    @Mock
+    HoldEventPublisher publisher;
 
     @BeforeEach
     void setUp() {
-        bookRepository = new InMemoryBooks();
-        holdRepository = new InMemoryHolds();
-        circulationDesk = new CirculationDesk(bookRepository, holdRepository, new InMemoryHoldsEventPublisher());
+        circulationDesk = new CirculationDesk(bookRepository, holdRepository, publisher);
     }
 
     @Test
     void patronCanPlaceHold() {
         var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId(UUID.randomUUID()));
+        var book = Book.addBook(new Book.AddBook(new Book.Barcode("12345"), "Test Book", "1234567890"));
+        var hold = Hold.placeHold(command);
+        when(bookRepository.findAvailableBook(any())).thenReturn(Optional.of(book));
+        when(holdRepository.save(any())).thenReturn(hold);
+        when(publisher.holdPlaced(any(Hold.class))).thenReturn(hold);
+
         var holdDto = circulationDesk.placeHold(command);
+
         assertThat(holdDto.getBookBarcode()).isEqualTo("12345");
         assertThat(holdDto.getDateOfHold()).isNotNull();
     }
@@ -52,140 +65,56 @@ class CirculationDeskTest {
     void bookStatusUpdatedWhenPlacedOnHold() {
         var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId(UUID.randomUUID()));
         var hold = Hold.placeHold(command);
+
+        var book = Book.addBook(new Book.AddBook(new Book.Barcode("12345"), "Test Book", "1234567890"));
+        when(bookRepository.findAvailableBook(any())).thenReturn(Optional.of(book));
+        when(bookRepository.save(any())).thenReturn(book);
+
         circulationDesk.handle(new BookPlacedOnHold(hold.getId().id(), hold.getOnBook().barcode(), hold.getDateOfHold()));
-        //noinspection OptionalGetWithoutIsPresent
-        var book = bookRepository.findByBarcode("12345").get();
+
         assertThat(book.getStatus()).isEqualTo(ON_HOLD);
     }
 
-//    @Test
-//    void patronCanCheckoutBook() {
-//        var command = new Hold.PlaceHold("12345", LocalDate.now());
-//        var hold = circulationDesk.placeHold(command);
-//        var checkout = circulationDesk.checkout(new Checkout.CheckoutBook(hold.getId(), hold.getBarcode(), LocalDate.now()));
-//        assertThat(checkout.getBarcode()).isEqualTo("12345");
-//        assertThat(checkout.getHoldId()).isEqualTo(hold.getId());
-//        assertThat(checkout.getDateOfCheckout()).isNotNull();
-//    }
+    @Test
+    void patronCanCheckoutBook() {
+        var patronId = new PatronId(UUID.randomUUID());
+        var hold = Hold.placeHold(new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), patronId));
+        var command = new Hold.Checkout(hold.getId(), LocalDate.now(), patronId);
 
-//    @Test
-//    void bookStatusUpdatedWhenCheckedOut() {
-//        // place on hold
-//        var command = new Hold.PlaceHold("12345", LocalDate.now());
-//        var hold = circulationDesk.placeHold(command);
-//        // publish event
-//        circulationDesk.handle(new Hold.HoldPlaced(hold));
-//
-//        // checkout book
-//        var checkout = circulationDesk.checkout(new Checkout.CheckoutBook(hold.getId(), hold.getBarcode(), LocalDate.now()));
-//        // publish event
-//        circulationDesk.handle(new Checkout.BookCheckedOut(checkout));
-//
-//        var book = bookRepository.findByBarcode("12345").get();
-//        assertThat(book.getStatus()).isEqualTo(ISSUED);
-//    }
-}
+        when(holdRepository.findById(any())).thenReturn(Optional.of(hold));
+        when(holdRepository.save(any())).thenReturn(hold);
+        when(publisher.bookCheckedOut(any(Hold.class))).thenReturn(hold);
 
-class InMemoryBooks implements BookRepository {
-
-    private final Map<String, Book> books = new HashMap<>();
-
-    public InMemoryBooks() {
-        var booksToAdd = List.of(
-                Book.addBook(new Book.AddBook(new Book.Barcode("12345"), "A famous book", "92972947199")),
-                Book.addBook(new Book.AddBook(new Book.Barcode("98765"), "Another famous book", "98137674132"))
-        );
-        booksToAdd.forEach(book -> books.put(book.getInventoryNumber().barcode(), book));
+        var checkoutDto = circulationDesk.checkout(command);
+        assertThat(checkoutDto.getHoldId()).isEqualTo(hold.getId().id().toString());
+        assertThat(checkoutDto.getDateOfCheckout()).isNotNull();
     }
 
-    @Override
-    public Optional<Book> findAvailableBook(Book.Barcode barcode) {
-        return books.values()
-                .stream()
-                .filter(it -> it.getInventoryNumber().equals(barcode))
-                .filter(it -> it.getStatus().equals(AVAILABLE))
-                .findFirst();
+    @Test
+    void patronCannotCheckoutBookHeldBySomeoneElse() {
+        var hold = Hold.placeHold(new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId(UUID.randomUUID())));
+        var command = new Hold.Checkout(hold.getId(), LocalDate.now(), new PatronId(UUID.randomUUID()));
+
+        when(holdRepository.findById(any())).thenReturn(Optional.of(hold));
+
+        assertThatIllegalArgumentException() //
+                .isThrownBy(() -> circulationDesk.checkout(command)) //
+                .withMessage("Hold does not belong to the specified patron");
     }
 
-    @Override
-    public Optional<Book> findOnHoldBook(Book.Barcode barcode) {
-        return books.values()
-                .stream()
-                .filter(it -> it.getInventoryNumber().equals(barcode))
-                .filter(it -> it.getStatus().equals(ON_HOLD))
-                .findFirst();
+    @Test
+    void bookStatusUpdatedWhenCheckoutBook() {
+        // Arrange
+        Book book = Book.addBook(new Book.AddBook(new Book.Barcode("12345"), "Test Book", "1234567890"));
+        book.markOnHold();
+        when(bookRepository.findOnHoldBook(any())).thenReturn(Optional.of(book));
+        when(bookRepository.save(any())).thenReturn(book);
+        BookCheckedOut event = new BookCheckedOut(book.getId().id(), book.getInventoryNumber().barcode(), LocalDate.now());
+
+        // Act
+        circulationDesk.handle(event);
+
+        // Assert
+        assertThat(book.getStatus()).isEqualTo(ISSUED);
     }
-
-    @Override
-    public Book save(Book book) {
-        books.put(book.getInventoryNumber().barcode(), book);
-        return book;
-    }
-
-    @Override
-    public Optional<Book> findByBarcode(String barcode) {
-        return books.values()
-                .stream()
-                .filter(it -> it.getInventoryNumber().barcode().equals(barcode))
-                .findFirst();
-    }
-}
-
-@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-class InMemoryHolds implements HoldRepository {
-
-    private final Map<UUID, Hold> holds = new HashMap<>();
-//    private final Map<UUID, Checkout> checkouts = new HashMap<>();
-
-    public InMemoryHolds() {
-        var hold = Hold.placeHold(new Hold.PlaceHold(new Book.Barcode("98765"), LocalDate.now(), new PatronId(UUID.randomUUID())));
-        holds.put(hold.getId().id(), hold);
-    }
-
-    @Override
-    public Hold save(Hold hold) {
-        holds.put(hold.getId().id(), hold);
-        return hold;
-    }
-
-//    @Override
-//    public Checkout save(Checkout checkout) {
-//        checkouts.put(checkout.getHoldId().holdId(), checkout);
-//        return checkout;
-//    }
-
-    @Override
-    public Optional<Hold> findById(Hold.HoldId id) {
-        return Optional.ofNullable(holds.get(id.id()));
-    }
-
-    @Override
-    public List<Hold> activeHolds() {
-        return holds.values().stream().toList();
-    }
-
-//    @Override
-//    public List<Checkout> checkouts() {
-//        return checkouts.values().stream().toList();
-//    }
-}
-
-@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-class InMemoryHoldsEventPublisher implements HoldEventPublisher {
-
-    private final List<BookPlacedOnHold> events = new LinkedList<>();
-
-    @Override
-    public void holdPlaced(BookPlacedOnHold event) {
-        events.add(event);
-    }
-
-    @Override
-    public void bookCheckedOut(BookCheckedOut event) {
-    }
-
-//    @Override
-//    public void bookCheckedOut(Checkout.BookCheckedOut event) {
-//        // NOOP
-//    }
 }

@@ -29,6 +29,14 @@ public class Hold {
         this.heldBy = placeHold.patronId();
     }
 
+    public Hold(HoldId id, Book.Barcode onBook, PatronId heldBy, LocalDate dateOfHold, LocalDate dateOfCheckout) {
+        this.id = id;
+        this.onBook = onBook;
+        this.heldBy = heldBy;
+        this.dateOfHold = dateOfHold;
+        this.dateOfCheckout = dateOfCheckout;
+    }
+
     public static Hold placeHold(PlaceHold command) {
         return new Hold(command);
     }

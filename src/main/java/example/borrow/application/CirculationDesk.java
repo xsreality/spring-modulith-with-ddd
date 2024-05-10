@@ -52,10 +52,14 @@ public class CirculationDesk {
         var hold = holds.findById(command.holdId())
                 .orElseThrow(() -> new IllegalArgumentException("Hold not found!"));
 
+        if (!hold.getHeldBy().equals(command.patronId())) {
+            throw new IllegalArgumentException("Hold does not belong to the specified patron");
+        }
+
         return CheckoutDto.from(
                 hold.checkout(command)
-                .then(holds::save)
-                .then(eventPublisher::bookCheckedOut)
+                        .then(holds::save)
+                        .then(eventPublisher::bookCheckedOut)
         );
     }
 
@@ -80,12 +84,4 @@ public class CirculationDesk {
         var command = new Book.AddBook(new Book.Barcode(event.inventoryNumber()), event.title(), event.isbn());
         books.save(Book.addBook(command));
     }
-
-//    @ApplicationModuleListener
-//    public void handle(Checkout.BookCheckedOut event) {
-//        books.findOnHoldBook(event.checkout().getBarcode())
-//                .map(Book::markCheckedOut)
-//                .map(books::save)
-//                .orElseThrow(() -> new IllegalArgumentException("Duplicate checkout?"));
-//    }
 }

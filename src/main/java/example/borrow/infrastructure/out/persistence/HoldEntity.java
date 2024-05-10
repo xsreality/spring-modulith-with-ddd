@@ -39,6 +39,8 @@ public class HoldEntity {
 
     private LocalDate dateOfHold;
 
+    private LocalDate dateOfCheckout;
+
     @Enumerated(EnumType.STRING)
     private HoldStatus status;
 
@@ -46,11 +48,7 @@ public class HoldEntity {
     private Long version;
 
     public Hold toDomain() {
-        if (this.status == HoldStatus.HOLDING) {
-            return Hold.placeHold(new Hold.PlaceHold(book, dateOfHold, new PatronId(patronId)));
-        } else {
-            return null;
-        }
+        return new Hold(new Hold.HoldId(id), book, new PatronId(patronId), dateOfHold, dateOfCheckout);
     }
 
     public static HoldEntity fromDomain(Hold hold) {

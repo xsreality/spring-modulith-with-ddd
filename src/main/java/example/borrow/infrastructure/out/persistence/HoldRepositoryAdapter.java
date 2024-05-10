@@ -4,7 +4,6 @@ import org.jmolecules.architecture.hexagonal.SecondaryAdapter;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
 
 import example.borrow.domain.Hold;
@@ -31,8 +30,4 @@ public class HoldRepositoryAdapter implements HoldRepository {
                 .map(HoldEntity::toDomain);
     }
 
-    @Override
-    public List<Hold> activeHolds() {
-        return null;
-    }
 }

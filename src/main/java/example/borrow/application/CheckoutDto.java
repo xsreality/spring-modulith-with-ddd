@@ -12,7 +12,7 @@ public class CheckoutDto {
     private final String patronId;
     private final LocalDate dateOfCheckout;
 
-    public CheckoutDto(String holdId, String patronId, LocalDate dateOfCheckout) {
+    private CheckoutDto(String holdId, String patronId, LocalDate dateOfCheckout) {
         this.holdId = holdId;
         this.patronId = patronId;
         this.dateOfCheckout = dateOfCheckout;
