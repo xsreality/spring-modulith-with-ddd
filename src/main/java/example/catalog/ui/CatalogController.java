@@ -3,6 +3,7 @@ package example.catalog.ui;
 import example.catalog.domain.CatalogBook.Barcode;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ class CatalogController {
 
     private final CatalogManagement books;
 
+    @PreAuthorize("hasRole('STAFF')")
     @PostMapping("/catalog/books")
     ResponseEntity<BookDto> addBookToInventory(@RequestBody AddBookRequest request) {
         var bookDto = books.addToCatalog(request.title(), new Barcode(request.catalogNumber()), request.isbn(), request.author());

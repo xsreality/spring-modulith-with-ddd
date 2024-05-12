@@ -1,0 +1,194 @@
+{
+  "id": "021b76be-fd6b-466c-82a9-8530927126d7",
+  "realm": "library",
+  "notBefore": 0,
+  "defaultSignatureAlgorithm": "RS256",
+  "revokeRefreshToken": false,
+  "refreshTokenMaxReuse": 0,
+  "accessTokenLifespan": 300,
+  "accessTokenLifespanForImplicitFlow": 900,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+  "ssoSessionIdleTimeoutRememberMe": 0,
+  "ssoSessionMaxLifespanRememberMe": 0,
+  "offlineSessionIdleTimeout": 2592000,
+  "offlineSessionMaxLifespanEnabled": false,
+  "offlineSessionMaxLifespan": 5184000,
+  "clientSessionIdleTimeout": 0,
+  "clientSessionMaxLifespan": 0,
+  "clientOfflineSessionIdleTimeout": 0,
+  "clientOfflineSessionMaxLifespan": 0,
+  "accessCodeLifespan": 60,
+  "accessCodeLifespanUserAction": 300,
+  "accessCodeLifespanLogin": 1800,
+  "actionTokenGeneratedByAdminLifespan": 43200,
+  "actionTokenGeneratedByUserLifespan": 300,
+  "oauth2DeviceCodeLifespan": 600,
+  "oauth2DevicePollingInterval": 5,
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "registrationEmailAsUsername": false,
+  "rememberMe": false,
+  "verifyEmail": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": false,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": false,
+  "permanentLockout": false,
+  "maxTemporaryLockouts": 0,
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 30,
+  "roles": {
+    "realm": [
+      {
+        "id": "903f1e33-91e0-46bb-9413-c79416e5375c",
+        "name": "uma_authorization",
+        "description": "${role_uma_authorization}",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "021b76be-fd6b-466c-82a9-8530927126d7",
+        "attributes": {}
+      },
+      {
+        "id": "57dd89a6-6f0d-4794-8975-c615a50deef4",
+        "name": "offline_access",
+        "description": "${role_offline-access}",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "021b76be-fd6b-466c-82a9-8530927126d7",
+        "attributes": {}
+      },
+      {
+        "id": "f6befd06-c73b-40de-8b37-c5e85cce395b",
+        "name": "default-roles-library",
+        "description": "${role_default-roles}",
+        "composite": true,
+        "composites": {
+          "realm": [
+            "offline_access",
+            "uma_authorization"
+          ],
+          "client": {
+            "account": [
+              "manage-account",
+              "view-profile"
+            ]
+          }
+        },
+        "clientRole": false,
+        "containerId": "021b76be-fd6b-466c-82a9-8530927126d7",
+        "attributes": {}
+      },
+      {
+        "id": "72d4fbcc-517f-41b8-82cc-af0a0168307b",
+        "name": "ROLE_STAFF",
+        "description": "Library staff allowed to manage books catalog.",
+        "composite": false,
+        "clientRole": false,
+        "containerId": "021b76be-fd6b-466c-82a9-8530927126d7",
+        "attributes": {}
+      }
+    ]
+  },
+  "users" : [ {
+    "id" : "2dab8dba-fdb6-43ef-916e-f041badd64d9",
+    "username" : "john",
+    "firstName" : "John",
+    "lastName" : "Wick",
+    "email" : "john.wick@library.com",
+    "emailVerified" : false,
+    "createdTimestamp" : 1715547071530,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "65bbb036-3ecd-4942-9c4b-77acb66b4924",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1715550620530,
+      "secretData" : "{\"value\":\"xljCCtA5/oGGH9CCpNwXswcQAqP30q3xa0Sff1yS9EIIaRyxPwcr3ugkmhyjpmzfHHNuuRmANcZv9UkJX0T2YA==\",\"salt\":\"tfH6V7GRncMZjjq3ex9dBg==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-library" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  }, {
+    "id" : "a0bdcbc5-1338-4573-95e8-9f9edd104d38",
+    "username" : "winston",
+    "firstName" : "Winston",
+    "lastName" : "Continental",
+    "email" : "winston@library.com",
+    "emailVerified" : false,
+    "createdTimestamp" : 1715547177831,
+    "enabled" : true,
+    "totp" : false,
+    "credentials" : [ {
+      "id" : "468e237c-4c68-4bbf-8fc8-84fa31e6580f",
+      "type" : "password",
+      "userLabel" : "My password",
+      "createdDate" : 1715551054976,
+      "secretData" : "{\"value\":\"f322dM2ytpSZZTHhaPB617IJmPvgDzYg+ztz3TrEdPCWB94EitJ7G1PVfM+6YKR9nPByVmKPU/n6MrkIgN7ITA==\",\"salt\":\"HqP3nIj2hZx73zqfBkbQaw==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":210000,\"algorithm\":\"pbkdf2-sha512\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "default-roles-library", "ROLE_STAFF" ],
+    "notBefore" : 0,
+    "groups" : [ ]
+  } ],
+  "groups": [],
+  "defaultRole": {
+    "id": "f6befd06-c73b-40de-8b37-c5e85cce395b",
+    "name": "default-roles-library",
+    "description": "${role_default-roles}",
+    "composite": true,
+    "clientRole": false,
+    "containerId": "021b76be-fd6b-466c-82a9-8530927126d7"
+  },
+  "requiredCredentials": [
+    "password"
+  ],
+  "clients" : [ {
+    "id" : "3eeed558-7fdd-4d03-a0e1-4639a0d842e3",
+    "clientId" : "library",
+    "name" : "Library",
+    "description" : "",
+    "rootUrl" : "",
+    "adminUrl" : "",
+    "baseUrl" : "",
+    "surrogateAuthRequired" : false,
+    "enabled" : true,
+    "alwaysDisplayInConsole" : false,
+    "clientAuthenticatorType" : "client-secret",
+    "redirectUris" : [ "http://localhost:8080", "http://localhost" ],
+    "webOrigins" : [ "http://localhost:8080", "http://localhost" ],
+    "notBefore" : 0,
+    "bearerOnly" : false,
+    "consentRequired" : false,
+    "standardFlowEnabled" : true,
+    "implicitFlowEnabled" : false,
+    "directAccessGrantsEnabled" : true,
+    "serviceAccountsEnabled" : false,
+    "publicClient" : true,
+    "frontchannelLogout" : true,
+    "protocol" : "openid-connect",
+    "attributes" : {
+      "oidc.ciba.grant.enabled" : "false",
+      "oauth2.device.authorization.grant.enabled" : "false",
+      "backchannel.logout.session.required" : "true",
+      "backchannel.logout.revoke.offline.tokens" : "false"
+    },
+    "authenticationFlowBindingOverrides" : { },
+    "fullScopeAllowed" : true,
+    "nodeReRegistrationTimeout" : -1,
+    "defaultClientScopes" : [ "web-origins", "acr", "profile", "roles", "email" ],
+    "optionalClientScopes" : [ "address", "phone", "offline_access", "microprofile-jwt" ]
+  } ]
+}

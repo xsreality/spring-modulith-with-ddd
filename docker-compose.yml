@@ -1,0 +1,15 @@
+version: '3.8'
+name: spring-modulith-with-ddd
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.3
+    command: ['start-dev', '--import-realm']
+    volumes:
+      - ./keycloak-realm:/opt/keycloak/data/import
+    container_name: keycloak
+    hostname: keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8083:8080"
