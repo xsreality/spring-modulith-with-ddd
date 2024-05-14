@@ -35,7 +35,7 @@ public class HoldEntity {
     @AttributeOverride(name = "barcode", column = @Column(name = "bookBarcode"))
     private Book.Barcode book;
 
-    private UUID patronId;
+    private String patronId;
 
     private LocalDate dateOfHold;
 
@@ -55,7 +55,7 @@ public class HoldEntity {
         var entity = new HoldEntity();
         entity.id = hold.getId().id();
         entity.book = hold.getOnBook();
-        entity.patronId = hold.getHeldBy().id();
+        entity.patronId = hold.getHeldBy().email();
         entity.dateOfHold = hold.getDateOfHold();
         entity.status = HoldStatus.HOLDING;
         entity.version = 0L;

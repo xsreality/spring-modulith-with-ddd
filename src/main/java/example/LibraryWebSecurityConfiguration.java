@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
-import example.user.KeycloakJwtAuthenticationConverter;
+import example.useraccount.KeycloakJwtAuthenticationConverter;
 
 @Configuration
 @EnableMethodSecurity

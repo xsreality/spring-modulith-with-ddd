@@ -1,10 +1,11 @@
-package example.borrow;
+package example.catalog;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.modulith.test.ApplicationModuleTest;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,11 +20,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ApplicationModuleTest
-class CirculationDeskControllerIT {
+class CatalogControllerIT {
 
     @DynamicPropertySource
     static void initializeData(DynamicPropertyRegistry registry) {
-        registry.add("spring.sql.init.data-locations", () -> "classpath:borrow.sql");
+        registry.add("spring.sql.init.data-locations", () -> "classpath:catalog_books.sql");
     }
 
     @Autowired
@@ -39,28 +40,22 @@ class CirculationDeskControllerIT {
     }
 
     @Test
-    void placeHoldRestCall() throws Exception {
-        mockMvc.perform(post("/borrow/holds")
-                        .with(jwt().jwt(jwt -> jwt.claim("email", "john.wick@continental.com")))
+    void addBookToCatalog() throws Exception {
+        mockMvc.perform(post("/catalog/books")
+                        .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_STAFF")))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                  "barcode": "64321704"
+                                  "title": "Sapiens",
+                                  "catalogNumber": "12345",
+                                  "isbn": "9780062316097",
+                                  "author": "Yuval Noah Harari"
                                 }
                                 """))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.bookBarcode", equalTo("64321704")))
-                .andExpect(jsonPath("$.patronId", equalTo("john.wick@continental.com")))
-                .andExpect(jsonPath("$.dateOfHold").exists());
-    }
-
-    @Test
-    void checkoutBookRestCall() throws Exception {
-        mockMvc.perform(post("/borrow/holds/018dc74a-4830-75cf-a194-5e9815727b02/checkout")
-                        .with(jwt().jwt(jwt -> jwt.claim("email", "john.wick@continental.com"))))
-                .andExpect(jsonPath("$.holdId", equalTo("018dc74a-4830-75cf-a194-5e9815727b02")))
-                .andExpect(jsonPath("$.patronId", equalTo("john.wick@continental.com")))
-                .andExpect(jsonPath("$.dateOfCheckout").exists());
+                .andExpect(jsonPath("$.catalogNumber.barcode", equalTo("12345")))
+                .andExpect(jsonPath("$.isbn", equalTo("9780062316097")))
+                .andExpect(jsonPath("$.author.name", equalTo("Yuval Noah Harari")));
     }
 }

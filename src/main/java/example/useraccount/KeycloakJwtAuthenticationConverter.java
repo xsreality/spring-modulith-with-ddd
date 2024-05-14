@@ -1,4 +1,4 @@
-package example.user;
+package example.useraccount;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -16,6 +16,7 @@ import java.util.Optional;
 public class KeycloakJwtAuthenticationConverter implements Converter<Jwt, AbstractAuthenticationToken> {
     private final Converter<Jwt, Collection<GrantedAuthority>> delegate = new JwtGrantedAuthoritiesConverter();
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public AbstractAuthenticationToken convert(Jwt jwt) {
         List<GrantedAuthority> extractedAuthorities = extractRoles(jwt);

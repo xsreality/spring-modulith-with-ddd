@@ -51,7 +51,7 @@ class CirculationDeskIT {
 
     @Test
     void patronCanPlaceHold(Scenario scenario) {
-        var command = new Hold.PlaceHold(new Book.Barcode("13268510"), LocalDate.now(), new PatronId(UUID.randomUUID()));
+        var command = new Hold.PlaceHold(new Book.Barcode("13268510"), LocalDate.now(), new PatronId("john.wick@continental.com"));
         scenario.stimulate(() -> circulationDesk.placeHold(command))
                 .andWaitForEventOfType(BookPlacedOnHold.class)
                 .toArriveAndVerify((event, dto) -> assertThat(event.inventoryNumber()).isEqualTo("13268510"));
