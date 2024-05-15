@@ -162,6 +162,17 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
+					<image>
+						<buildpacks>
+							<buildpack>paketo-buildpacks/java</buildpack>
+						</buildpacks>
+						<builder>dashaun/builder:tiny</builder> <!-- paketo images do not support ARM -->
+						<env>
+							<BP_NATIVE_IMAGE>false</BP_NATIVE_IMAGE>
+							<BPL_JAVA_NMT_ENABLED>false</BPL_JAVA_NMT_ENABLED>
+							<BP_SPRING_CLOUD_BINDINGS_DISABLED>true</BP_SPRING_CLOUD_BINDINGS_DISABLED>
+						</env>
+					</image>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

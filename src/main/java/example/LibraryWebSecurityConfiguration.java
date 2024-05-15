@@ -16,7 +16,9 @@ public class LibraryWebSecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
 
         return security
-                .authorizeHttpRequests(http -> http.anyRequest().authenticated())
+                .authorizeHttpRequests(http -> http
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwtConfigurer ->
                                 jwtConfigurer.jwtAuthenticationConverter(new KeycloakJwtAuthenticationConverter())

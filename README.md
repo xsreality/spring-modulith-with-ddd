@@ -27,9 +27,23 @@ The code is explained in a series of blog posts.
 
 ![image](https://github.com/xsreality/spring-modulith-with-ddd/assets/4991449/2f8947e9-2630-411a-a14b-099f4bcfed89)
 
+## Prepare the application
+
+To compile and build the docker images, run below command:
+
+```bash
+mvn spring-boot:build-image
+```
+
+This will generate a docker image locally - `spring-modulith-with-ddd:0.0.1-SNAPSHOT`.
+
 ## Run the application
 
-Run the application with the command: `mvn spring-boot:run`.
+The project comes with a docker compose file which spins up the application as well as Keycloak, the Authorization server for OAuth2 flow. After completing the steps in "Prepare the application", run below command to start the application:
+
+```bash
+docker-compose up
+```
 
 ## Swagger REST API Docs
 Access the Swagger UI at http://localhost:8080/swagger-ui.html
