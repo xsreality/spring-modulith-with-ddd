@@ -98,7 +98,7 @@ class CirculationDeskTest {
 
         assertThatIllegalArgumentException() //
                 .isThrownBy(() -> circulationDesk.checkout(command)) //
-                .withMessage("Hold does not belong to the specified patron");
+                .withMessage("Hold belongs to a different patron");
     }
 
     @Test

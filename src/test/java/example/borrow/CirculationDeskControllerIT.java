@@ -59,6 +59,7 @@ class CirculationDeskControllerIT {
     void checkoutBookRestCall() throws Exception {
         mockMvc.perform(post("/borrow/holds/018dc74a-4830-75cf-a194-5e9815727b02/checkout")
                         .with(jwt().jwt(jwt -> jwt.claim("email", "john.wick@continental.com"))))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.holdId", equalTo("018dc74a-4830-75cf-a194-5e9815727b02")))
                 .andExpect(jsonPath("$.patronId", equalTo("john.wick@continental.com")))
                 .andExpect(jsonPath("$.dateOfCheckout").exists());

@@ -12,10 +12,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.http.HttpHeaders.WWW_AUTHENTICATE;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,7 +44,7 @@ class CatalogControllerIT {
     }
 
     @Test
-    void addBookToCatalog() throws Exception {
+    void addBookToCatalogSucceedsWithStaff() throws Exception {
         mockMvc.perform(post("/catalog/books")
                         .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_STAFF")))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -57,5 +61,23 @@ class CatalogControllerIT {
                 .andExpect(jsonPath("$.catalogNumber.barcode", equalTo("12345")))
                 .andExpect(jsonPath("$.isbn", equalTo("9780062316097")))
                 .andExpect(jsonPath("$.author.name", equalTo("Yuval Noah Harari")));
+    }
+
+    @Test
+    void addBookToCatalogFailsWithNonStaff() throws Exception {
+        mockMvc.perform(post("/catalog/books")
+                        .with(jwt())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "title": "Sapiens",
+                                  "catalogNumber": "12345",
+                                  "isbn": "9780062316097",
+                                  "author": "Yuval Noah Harari"
+                                }
+                                """))
+                .andDo(print())
+                .andExpect(status().isForbidden())
+                .andExpect(header().string(WWW_AUTHENTICATE, containsString("Bearer error=\"insufficient_scope\"")));
     }
 }

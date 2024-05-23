@@ -5,8 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.modulith.Modulithic;
 
 @Modulithic(
-        sharedModules = {"example.useraccount"},
-        useFullyQualifiedModuleNames = true
+        sharedModules = {"useraccount"}
 )
 @SpringBootApplication
 public class LibraryApplication {
