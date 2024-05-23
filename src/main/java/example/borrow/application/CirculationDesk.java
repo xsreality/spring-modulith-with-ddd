@@ -52,8 +52,8 @@ public class CirculationDesk {
         var hold = holds.findById(command.holdId())
                 .orElseThrow(() -> new IllegalArgumentException("Hold not found!"));
 
-        if (!hold.getHeldBy().equals(command.patronId())) {
-            throw new IllegalArgumentException("Hold does not belong to the specified patron");
+        if (!hold.isHeldBy(command.patronId())) {
+            throw new IllegalArgumentException("Hold belongs to a different patron");
         }
 
         return CheckoutDto.from(

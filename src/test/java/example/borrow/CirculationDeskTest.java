@@ -8,7 +8,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import java.util.UUID;
 
 import example.borrow.application.CirculationDesk;
 import example.borrow.domain.Book;
@@ -48,7 +47,7 @@ class CirculationDeskTest {
 
     @Test
     void patronCanPlaceHold() {
-        var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId(UUID.randomUUID()));
+        var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId("john.wick@continental.com"));
         var book = Book.addBook(new Book.AddBook(new Book.Barcode("12345"), "Test Book", "1234567890"));
         var hold = Hold.placeHold(command);
         when(bookRepository.findAvailableBook(any())).thenReturn(Optional.of(book));
@@ -63,7 +62,7 @@ class CirculationDeskTest {
 
     @Test
     void bookStatusUpdatedWhenPlacedOnHold() {
-        var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId(UUID.randomUUID()));
+        var command = new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId("john.wick@continental.com"));
         var hold = Hold.placeHold(command);
 
         var book = Book.addBook(new Book.AddBook(new Book.Barcode("12345"), "Test Book", "1234567890"));
@@ -77,7 +76,7 @@ class CirculationDeskTest {
 
     @Test
     void patronCanCheckoutBook() {
-        var patronId = new PatronId(UUID.randomUUID());
+        var patronId = new PatronId("john.wick@continental.com");
         var hold = Hold.placeHold(new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), patronId));
         var command = new Hold.Checkout(hold.getId(), LocalDate.now(), patronId);
 
@@ -92,14 +91,14 @@ class CirculationDeskTest {
 
     @Test
     void patronCannotCheckoutBookHeldBySomeoneElse() {
-        var hold = Hold.placeHold(new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId(UUID.randomUUID())));
-        var command = new Hold.Checkout(hold.getId(), LocalDate.now(), new PatronId(UUID.randomUUID()));
+        var hold = Hold.placeHold(new Hold.PlaceHold(new Book.Barcode("12345"), LocalDate.now(), new PatronId("john.wick@continental.com")));
+        var command = new Hold.Checkout(hold.getId(), LocalDate.now(), new PatronId("winston@continental.com"));
 
         when(holdRepository.findById(any())).thenReturn(Optional.of(hold));
 
         assertThatIllegalArgumentException() //
                 .isThrownBy(() -> circulationDesk.checkout(command)) //
-                .withMessage("Hold does not belong to the specified patron");
+                .withMessage("Hold belongs to a different patron");
     }
 
     @Test

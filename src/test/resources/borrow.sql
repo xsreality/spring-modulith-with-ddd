@@ -5,5 +5,5 @@ VALUES ('018dc771-7b96-776b-980d-caf7c6b2c00b', 0, 'Sapiens', '13268510', '97800
        ('018dc771-bd5f-71c5-b481-e9b9e8268c6c', 0, '1984', '37040952', '9780451520500', 'ISSUED');
 
 INSERT INTO borrow_holds (id, version, book_barcode, patron_id, date_of_hold, status)
-VALUES ('018dc74a-4830-75cf-a194-5e9815727b02', 0, '49031878', '018dd2f7-b241-7d27-be99-45fb3f145ddf', '2023-03-11', 'HOLDING'),
-       ('018dc74a-8b3d-732e-806f-d210f079c0cc', 0, '37040952', '018f5f30-0d06-74ee-8bde-da4454d572b0', '2023-03-24', 'ACTIVE');
+VALUES ('018dc74a-4830-75cf-a194-5e9815727b02', 0, '49031878', 'john.wick@continental.com', '2023-03-11', 'HOLDING'),
+       ('018dc74a-8b3d-732e-806f-d210f079c0cc', 0, '37040952', 'winston@continental.com', '2023-03-24', 'ACTIVE');

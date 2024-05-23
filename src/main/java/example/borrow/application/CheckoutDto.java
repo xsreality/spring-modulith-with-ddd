@@ -21,7 +21,7 @@ public class CheckoutDto {
     public static CheckoutDto from(Hold hold) {
         return new CheckoutDto(
                 hold.getId().id().toString(),
-                hold.getHeldBy().id().toString(),
+                hold.getHeldBy().email(),
                 hold.getDateOfCheckout());
     }
 }

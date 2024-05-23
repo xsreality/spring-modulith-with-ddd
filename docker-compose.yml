@@ -1,0 +1,22 @@
+version: '3.8'
+name: spring-modulith-with-ddd
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.3
+    command: ['start-dev', '--import-realm']
+    volumes:
+      - ./keycloak-realm:/opt/keycloak/data/import
+    container_name: keycloak
+    hostname: keycloak
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8083:8080"
+
+  library:
+    image: "spring-modulith-with-ddd:0.0.1-SNAPSHOT"
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK-SET-URI=http://keycloak:8080/realms/library/protocol/openid-connect/certs

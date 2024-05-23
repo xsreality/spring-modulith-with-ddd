@@ -19,20 +19,44 @@ The code is explained in a series of blog posts.
 
 1. The library consists of thousands of books. There can be multiple copies of the same book.
 2. Before being included in the library, every book receives a barcode stamped at the back or one of the end pages. This barcode number uniquely identifies the book.
-3. A patron of the library can make a request to place a book on hold by either locating the book in the library or directly going to the circulation desk and ask for a book by title. If book is available, the patron can proceed to checkout (collect) the book.
-4. The book is checked out for a fixed period of 2 weeks.
-5. To check in (return) the book, the patron can go to the circulation desk or drop it in the drop zone.
+3. A patron of the library can make a request to place a book on hold by either locating the book in the library or directly going to the circulation desk and ask for a book by title. If book is available, the patron can proceed to checkout (collect) the book. 
+4. A patron cannot check out a book held by a different patron.
+5. The book is checked out for a fixed period of 2 weeks.
+6. To check in (return) the book, the patron can go to the circulation desk or drop it in the drop zone.
+7. Only staff members (users with role `ROLE_STAFF`) can add a book to the catalog.
 
 ## Bounded Contexts
 
 ![image](https://github.com/xsreality/spring-modulith-with-ddd/assets/4991449/2f8947e9-2630-411a-a14b-099f4bcfed89)
 
+## Prepare the application
+
+To compile and build the docker images, run below command:
+
+```bash
+mvn spring-boot:build-image
+```
+
+This will generate a docker image locally - `spring-modulith-with-ddd:0.0.1-SNAPSHOT`.
+
 ## Run the application
 
-Run the application with the command: `mvn spring-boot:run`.
+The project comes with a docker compose file which spins up the application as well as Keycloak, the Authorization server for OAuth2 flow. After completing the steps in "Prepare the application", run below command to start the application:
+
+```bash
+docker-compose up
+```
+
+## Authentication
+
+The project uses OAuth2 flows for authentication implemented with Spring Security. The Authorization server is Keycloak (installed automatically via docker compose). The OIDC discovery document can be accessed at http://localhost:8083/realms/library/.well-known/openid-configuration.
+
+Keycloak is preconfigured with a realm named `library`. It has 2 users - `john` and `winston` with the credentials `password`. A public client with client ID `library` is also configured to trigger the Authorization code flow.
+
+An access token can be obtained by using any client like Postman or Insomnia to trigger the Authorization code flow. 
 
 ## Swagger REST API Docs
-Access the Swagger UI at http://localhost:8080/swagger-ui.html
+Access the Swagger UI at http://localhost:8080/swagger-ui/index.html
 
 ![image](https://github.com/xsreality/spring-modulith-with-ddd/assets/4991449/fcfb3e49-3024-4850-ba6e-dfeb9211caff)
 

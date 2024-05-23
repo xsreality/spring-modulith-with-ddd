@@ -24,7 +24,7 @@ public class HoldDto {
         return new HoldDto(
                 hold.getId().id().toString(),
                 hold.getOnBook().barcode(),
-                hold.getHeldBy().id().toString(),
+                hold.getHeldBy().email(),
                 hold.getDateOfHold());
     }
 }

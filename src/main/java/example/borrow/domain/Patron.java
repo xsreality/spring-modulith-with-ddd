@@ -1,7 +1,5 @@
 package example.borrow.domain;
 
-import java.util.UUID;
-
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.Getter;
@@ -14,20 +12,19 @@ public class Patron {
     @Enumerated(EnumType.STRING)
     private Membership status;
 
-    private Patron(Membership status) {
-        this.id = new PatronId(UUID.randomUUID());
-        this.status = status;
+    private Patron(String email) {
+        this.id = new PatronId(email);
     }
 
-    public static Patron of(Membership status) {
-        return new Patron(status);
+    public static Patron of(String email) {
+        return new Patron(email);
     }
 
     public void deactivate() {
         this.status = Membership.INACTIVE;
     }
 
-    public record PatronId(UUID id) {
+    public record PatronId(String email) {
     }
 
     public enum Membership {

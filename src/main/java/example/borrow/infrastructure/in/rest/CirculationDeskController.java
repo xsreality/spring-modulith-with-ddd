@@ -17,6 +17,8 @@ import example.borrow.application.HoldDto;
 import example.borrow.domain.Book;
 import example.borrow.domain.Hold;
 import example.borrow.domain.Patron.PatronId;
+import example.useraccount.web.Authenticated;
+import example.useraccount.UserAccount;
 import lombok.RequiredArgsConstructor;
 
 @PrimaryAdapter
@@ -27,15 +29,15 @@ public class CirculationDeskController {
     private final CirculationDesk circulationDesk;
 
     @PostMapping("/borrow/holds")
-    ResponseEntity<HoldDto> holdBook(@RequestBody HoldRequest request) {
-        var command = new Hold.PlaceHold(new Book.Barcode(request.barcode()), LocalDate.now(), new PatronId(request.patronId()));
+    ResponseEntity<HoldDto> holdBook(@RequestBody HoldRequest request, @Authenticated UserAccount userAccount) {
+        var command = new Hold.PlaceHold(new Book.Barcode(request.barcode()), LocalDate.now(), new PatronId(userAccount.email()));
         var holdDto = circulationDesk.placeHold(command);
         return ResponseEntity.ok(holdDto);
     }
 
     @PostMapping("/borrow/holds/{id}/checkout")
-    ResponseEntity<CheckoutDto> checkoutBook(@PathVariable("id") UUID holdId, @RequestBody CheckoutRequest request) {
-        var command = new Hold.Checkout(new Hold.HoldId(holdId), LocalDate.now(), new PatronId(request.patronId()));
+    ResponseEntity<CheckoutDto> checkoutBook(@PathVariable("id") UUID holdId, @Authenticated UserAccount userAccount) {
+        var command = new Hold.Checkout(new Hold.HoldId(holdId), LocalDate.now(), new PatronId(userAccount.email()));
         var checkoutDto = circulationDesk.checkout(command);
         return ResponseEntity.ok(checkoutDto);
     }
@@ -47,9 +49,6 @@ public class CirculationDeskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    record HoldRequest(String barcode, UUID patronId) {
-    }
-
-    record CheckoutRequest(UUID patronId) {
+    record HoldRequest(String barcode) {
     }
 }

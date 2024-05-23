@@ -50,6 +50,10 @@ public class Hold {
         return function.apply(this);
     }
 
+    public boolean isHeldBy(PatronId patronId) {
+        return this.heldBy.equals(patronId);
+    }
+
     public record HoldId(UUID id) implements Identifier {
     }
 

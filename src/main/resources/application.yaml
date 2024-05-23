@@ -3,3 +3,9 @@ spring:
     open-in-view: false
     show-sql: true
     defer-datasource-initialization: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8083/realms/library
