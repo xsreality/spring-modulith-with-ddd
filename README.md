@@ -106,7 +106,7 @@ Response:
 {
   "id": "8c8702af-9363-4953-94a5-2ddfa5aea631",
   "bookBarcode": "12345",
-  "patronId": "winston@continental.com",
+  "patronId": "john.wick@continental.com",
   "dateOfHold": "2024-05-27"
 }
 ```
