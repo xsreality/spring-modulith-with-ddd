@@ -81,6 +81,12 @@
 			<artifactId>jmolecules-ddd</artifactId>
 		</dependency>
 
+        <dependency>
+            <groupId>org.xmlunit</groupId>
+            <artifactId>xmlunit-core</artifactId>
+            <version>[2.10.0,)</version>
+        </dependency>
+
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
