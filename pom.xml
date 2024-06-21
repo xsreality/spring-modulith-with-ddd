@@ -14,7 +14,7 @@
 	<name>spring-modulith-with-ddd</name>
 	<description>Spring Modulith with DDD</description>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>22</java.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
 		<springdoc-openapi-starter-webmvc-ui.version>2.5.0</springdoc-openapi-starter-webmvc-ui.version>
@@ -164,13 +164,15 @@
 				<configuration>
 					<image>
 						<buildpacks>
-							<buildpack>paketo-buildpacks/java</buildpack>
+							<buildpack>paketobuildpacks/java</buildpack>
 						</buildpacks>
-						<builder>dashaun/builder:tiny</builder> <!-- paketo images do not support ARM -->
+						<builder>paketobuildpacks/builder-jammy-buildpackless-tiny</builder>
 						<env>
 							<BP_NATIVE_IMAGE>false</BP_NATIVE_IMAGE>
 							<BPL_JAVA_NMT_ENABLED>false</BPL_JAVA_NMT_ENABLED>
 							<BP_SPRING_CLOUD_BINDINGS_DISABLED>true</BP_SPRING_CLOUD_BINDINGS_DISABLED>
+							<BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
+							<BP_JVM_VERSION>22</BP_JVM_VERSION>
 						</env>
 					</image>
 					<excludes>
