@@ -12,7 +12,7 @@ The code is explained in a series of blog posts.
 
 ## Project Requirements
 
-* JDK 21
+* JDK 22
 * Spring Boot 3.3
 
 ## The Business Problem
