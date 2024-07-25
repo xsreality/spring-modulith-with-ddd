@@ -1,23 +1,27 @@
 package example.borrow.domain;
 
-import org.jmolecules.architecture.hexagonal.SecondaryPort;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.stereotype.Component;
 
-@SecondaryPort
-public interface HoldEventPublisher {
+import example.borrow.domain.Book.BookCheckedOut;
+import example.borrow.domain.Book.BookPlacedOnHold;
+import lombok.RequiredArgsConstructor;
 
-    void holdPlaced(BookPlacedOnHold event);
+@Component
+@RequiredArgsConstructor
+public class HoldEventPublisher {
 
-    default Hold holdPlaced(Hold hold) {
+    private final ApplicationEventPublisher publisher;
+
+    public Hold holdPlaced(Hold hold) {
         BookPlacedOnHold event = new BookPlacedOnHold(hold.getId().id(), hold.getOnBook().barcode(), hold.getDateOfHold());
-        this.holdPlaced(event);
+        publisher.publishEvent(event);
         return hold;
     }
 
-    void bookCheckedOut(BookCheckedOut event);
-
-    default Hold bookCheckedOut(Hold hold) {
+    public Hold bookCheckedOut(Hold hold) {
         BookCheckedOut event = new BookCheckedOut(hold.getId().id(), hold.getOnBook().barcode(), hold.getDateOfCheckout());
-        this.bookCheckedOut(event);
+        publisher.publishEvent(event);
         return hold;
     }
 }

@@ -9,8 +9,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import example.borrow.domain.Book;
-import example.borrow.domain.BookCheckedOut;
-import example.borrow.domain.BookPlacedOnHold;
+import example.borrow.domain.Book.BookCheckedOut;
+import example.borrow.domain.Book.BookPlacedOnHold;
 import example.borrow.domain.BookRepository;
 import example.borrow.domain.Hold;
 import example.borrow.domain.HoldEventPublisher;
@@ -32,20 +32,20 @@ public class CirculationDesk {
         this.eventPublisher = eventPublisher;
     }
 
-    public HoldDto placeHold(Hold.PlaceHold command) {
+    public HoldInformation placeHold(Hold.PlaceHold command) {
         books.findAvailableBook(command.inventoryNumber())
                 .orElseThrow(() -> new IllegalArgumentException("Book not found"));
 
-        return HoldDto.from(
-                Hold.placeHold(command)
-                        .then(holds::save)
-                        .then(eventPublisher::holdPlaced)
-        );
+        var hold = Hold.placeHold(command)
+                .then(holds::save)
+                .then(eventPublisher::holdPlaced);
+
+        return HoldInformation.from(hold);
     }
 
-    public Optional<HoldDto> locate(UUID holdId) {
+    public Optional<HoldInformation> locate(UUID holdId) {
         return holds.findById(new Hold.HoldId(holdId))
-                .map(HoldDto::from);
+                .map(HoldInformation::from);
     }
 
     public CheckoutDto checkout(Hold.Checkout command) {

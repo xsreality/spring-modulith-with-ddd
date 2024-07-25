@@ -7,34 +7,53 @@ import java.util.UUID;
 import java.util.function.UnaryOperator;
 
 import example.borrow.domain.Patron.PatronId;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
+@Entity
+@NoArgsConstructor
+@Table(name = "borrow_holds")
 @Getter
 public class Hold {
 
-    private final HoldId id;
+    @EmbeddedId
+    private HoldId id;
 
-    private final Book.Barcode onBook;
+    @Embedded
+    @AttributeOverride(name = "barcode", column = @Column(name = "book_barcode"))
+    private Book.Barcode onBook;
 
-    private final PatronId heldBy;
+    @Embedded
+    @AttributeOverride(name = "email", column = @Column(name = "patron_id"))
+    private PatronId heldBy;
 
-    private final LocalDate dateOfHold;
+    private LocalDate dateOfHold;
 
     private LocalDate dateOfCheckout;
+
+    @Enumerated(EnumType.STRING)
+    private HoldStatus status;
+
+    @SuppressWarnings("unused")
+    @Version
+    private Long version;
 
     private Hold(PlaceHold placeHold) {
         this.id = new HoldId(UUID.randomUUID());
         this.onBook = placeHold.inventoryNumber();
         this.dateOfHold = placeHold.dateOfHold();
         this.heldBy = placeHold.patronId();
-    }
-
-    public Hold(HoldId id, Book.Barcode onBook, PatronId heldBy, LocalDate dateOfHold, LocalDate dateOfCheckout) {
-        this.id = id;
-        this.onBook = onBook;
-        this.heldBy = heldBy;
-        this.dateOfHold = dateOfHold;
-        this.dateOfCheckout = dateOfCheckout;
+        this.status = HoldStatus.HOLDING;
     }
 
     public static Hold placeHold(PlaceHold command) {
@@ -62,5 +81,9 @@ public class Hold {
 
     public record Checkout(HoldId holdId, LocalDate dateOfCheckout, PatronId patronId) {
 
+    }
+
+    public enum HoldStatus {
+        HOLDING, ACTIVE, COMPLETED
     }
 }

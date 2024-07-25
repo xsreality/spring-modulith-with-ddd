@@ -11,8 +11,8 @@ import java.util.Optional;
 
 import example.borrow.application.CirculationDesk;
 import example.borrow.domain.Book;
-import example.borrow.domain.BookCheckedOut;
-import example.borrow.domain.BookPlacedOnHold;
+import example.borrow.domain.Book.BookCheckedOut;
+import example.borrow.domain.Book.BookPlacedOnHold;
 import example.borrow.domain.BookRepository;
 import example.borrow.domain.Hold;
 import example.borrow.domain.HoldEventPublisher;
