@@ -15,10 +15,9 @@ import java.util.UUID;
 
 import example.borrow.application.CirculationDesk;
 import example.borrow.domain.Book;
-import example.borrow.domain.Book.BookPlacedOnHold;
 import example.borrow.domain.BookRepository;
 import example.borrow.domain.Hold;
-import example.borrow.domain.HoldEventPublisher;
+import example.borrow.domain.Hold.BookPlacedOnHold;
 import example.borrow.domain.HoldRepository;
 import example.borrow.domain.Patron.PatronId;
 
@@ -39,14 +38,11 @@ class CirculationDeskIT {
     @Autowired
     HoldRepository holds;
 
-    @Autowired
-    HoldEventPublisher publisher;
-
     CirculationDesk circulationDesk;
 
     @BeforeEach
     void setUp() {
-        circulationDesk = new CirculationDesk(books, holds, publisher);
+        circulationDesk = new CirculationDesk(books, holds);
     }
 
     @Test

@@ -1,6 +1,8 @@
 package example.borrow.domain;
 
 import org.jmolecules.ddd.types.Identifier;
+import org.jmolecules.event.annotation.DomainEvent;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -24,7 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "borrow_holds")
 @Getter
-public class Hold {
+public class Hold extends AbstractAggregateRoot<Hold> {
 
     @EmbeddedId
     private HoldId id;
@@ -54,6 +56,7 @@ public class Hold {
         this.dateOfHold = placeHold.dateOfHold();
         this.heldBy = placeHold.patronId();
         this.status = HoldStatus.HOLDING;
+        this.registerEvent(new BookPlacedOnHold(id.id(), onBook.barcode(), dateOfHold));
     }
 
     public static Hold placeHold(PlaceHold command) {
@@ -62,6 +65,7 @@ public class Hold {
 
     public Hold checkout(Checkout command) {
         this.dateOfCheckout = command.dateOfCheckout();
+        this.registerEvent(new BookCheckedOut(id.id(), onBook.barcode(), dateOfCheckout));
         return this;
     }
 
@@ -76,6 +80,14 @@ public class Hold {
     public record HoldId(UUID id) implements Identifier {
     }
 
+    public enum HoldStatus {
+        HOLDING, ACTIVE, COMPLETED
+    }
+
+    ///
+    // Commands
+    ///
+
     public record PlaceHold(Book.Barcode inventoryNumber, LocalDate dateOfHold, PatronId patronId) {
     }
 
@@ -83,7 +95,19 @@ public class Hold {
 
     }
 
-    public enum HoldStatus {
-        HOLDING, ACTIVE, COMPLETED
+    ///
+    // Events
+    ///
+
+    @DomainEvent
+    public record BookCheckedOut(UUID holdId,
+                                 String inventoryNumber,
+                                 LocalDate dateOfCheckout) {
+    }
+
+    @DomainEvent
+    public record BookPlacedOnHold(UUID holdId,
+                                   String inventoryNumber,
+                                   LocalDate dateOfHold) {
     }
 }

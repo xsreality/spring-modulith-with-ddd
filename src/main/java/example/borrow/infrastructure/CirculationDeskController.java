@@ -1,6 +1,5 @@
 package example.borrow.infrastructure;
 
-import org.jmolecules.architecture.hexagonal.PrimaryAdapter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,11 +16,10 @@ import example.borrow.application.HoldInformation;
 import example.borrow.domain.Book;
 import example.borrow.domain.Hold;
 import example.borrow.domain.Patron.PatronId;
-import example.useraccount.web.Authenticated;
 import example.useraccount.UserAccount;
+import example.useraccount.web.Authenticated;
 import lombok.RequiredArgsConstructor;
 
-@PrimaryAdapter
 @RestController
 @RequiredArgsConstructor
 public class CirculationDeskController {

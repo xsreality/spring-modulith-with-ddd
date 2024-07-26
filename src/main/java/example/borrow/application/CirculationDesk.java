@@ -1,6 +1,5 @@
 package example.borrow.application;
 
-import org.jmolecules.architecture.hexagonal.Port;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,27 +8,21 @@ import java.util.Optional;
 import java.util.UUID;
 
 import example.borrow.domain.Book;
-import example.borrow.domain.Book.BookCheckedOut;
-import example.borrow.domain.Book.BookPlacedOnHold;
 import example.borrow.domain.BookRepository;
 import example.borrow.domain.Hold;
-import example.borrow.domain.HoldEventPublisher;
 import example.borrow.domain.HoldRepository;
 import example.catalog.BookAddedToCatalog;
 
-@Port
 @Service
 @Transactional
 public class CirculationDesk {
 
     private final BookRepository books;
     private final HoldRepository holds;
-    private final HoldEventPublisher eventPublisher;
 
-    public CirculationDesk(BookRepository books, HoldRepository holds, HoldEventPublisher eventPublisher) {
+    public CirculationDesk(BookRepository books, HoldRepository holds) {
         this.books = books;
         this.holds = holds;
-        this.eventPublisher = eventPublisher;
     }
 
     public HoldInformation placeHold(Hold.PlaceHold command) {
@@ -37,8 +30,7 @@ public class CirculationDesk {
                 .orElseThrow(() -> new IllegalArgumentException("Book not found"));
 
         var hold = Hold.placeHold(command)
-                .then(holds::save)
-                .then(eventPublisher::holdPlaced);
+                .then(holds::save);
 
         return HoldInformation.from(hold);
     }
@@ -58,13 +50,11 @@ public class CirculationDesk {
 
         return CheckoutDto.from(
                 hold.checkout(command)
-                        .then(holds::save)
-                        .then(eventPublisher::bookCheckedOut)
-        );
+                        .then(holds::save));
     }
 
     @ApplicationModuleListener
-    public void handle(BookPlacedOnHold event) {
+    public void handle(Hold.BookPlacedOnHold event) {
         books.findAvailableBook(new Book.Barcode(event.inventoryNumber()))
                 .map(Book::markOnHold)
                 .map(books::save)
@@ -72,7 +62,7 @@ public class CirculationDesk {
     }
 
     @ApplicationModuleListener
-    public void handle(BookCheckedOut event) {
+    public void handle(Hold.BookCheckedOut event) {
         books.findOnHoldBook(new Book.Barcode(event.inventoryNumber()))
                 .map(Book::markCheckedOut)
                 .map(books::save)
