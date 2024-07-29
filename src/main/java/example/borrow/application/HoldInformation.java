@@ -6,22 +6,22 @@ import example.borrow.domain.Hold;
 import lombok.Getter;
 
 @Getter
-public class HoldDto {
+public class HoldInformation {
 
     private final String id;
     private final String bookBarcode;
     private final String patronId;
     private final LocalDate dateOfHold;
 
-    private HoldDto(String id, String bookBarcode, String patronId, LocalDate dateOfHold) {
+    private HoldInformation(String id, String bookBarcode, String patronId, LocalDate dateOfHold) {
         this.id = id;
         this.bookBarcode = bookBarcode;
         this.patronId = patronId;
         this.dateOfHold = dateOfHold;
     }
 
-    public static HoldDto from(Hold hold) {
-        return new HoldDto(
+    public static HoldInformation from(Hold hold) {
+        return new HoldInformation(
                 hold.getId().id().toString(),
                 hold.getOnBook().barcode(),
                 hold.getHeldBy().email(),

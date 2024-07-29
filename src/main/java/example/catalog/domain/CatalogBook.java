@@ -2,7 +2,9 @@ package example.catalog.domain;
 
 import org.jmolecules.ddd.annotation.AggregateRoot;
 import org.jmolecules.ddd.annotation.Identity;
+import org.springframework.data.domain.AbstractAggregateRoot;
 
+import example.catalog.BookAddedToCatalog;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -16,12 +18,13 @@ import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @AggregateRoot
 @Entity
 @Getter
 @NoArgsConstructor
 @Table(name = "catalog_books", uniqueConstraints = @UniqueConstraint(columnNames = {"barcode"}))
-public class CatalogBook {
+public class CatalogBook extends AbstractAggregateRoot<CatalogBook> {
 
     @Identity
     @Id
@@ -39,6 +42,7 @@ public class CatalogBook {
     @AttributeOverride(name = "name", column = @Column(name = "author"))
     private Author author;
 
+    @SuppressWarnings("unused")
     @Version
     private Long version;
 
@@ -47,6 +51,7 @@ public class CatalogBook {
         this.catalogNumber = catalogNumber;
         this.isbn = isbn;
         this.author = author;
+        this.registerEvent(new BookAddedToCatalog(title, catalogNumber.barcode(), isbn, author.name()));
     }
 
     public record Barcode(String barcode) {

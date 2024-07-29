@@ -5,20 +5,40 @@ import org.jmolecules.ddd.types.ValueObject;
 
 import java.util.UUID;
 
+import jakarta.persistence.Embedded;
+import jakarta.persistence.EmbeddedId;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.Version;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
+@Entity
+@NoArgsConstructor
+@Table(name = "borrow_books", uniqueConstraints = @UniqueConstraint(columnNames = "barcode"))
 @Getter
 public class Book {
 
-    private final BookId id;
+    @EmbeddedId
+    private BookId id;
 
-    private final Barcode inventoryNumber;
+    @Embedded
+    private Barcode inventoryNumber;
 
-    private final String title;
+    private String title;
 
-    private final String isbn;
+    private String isbn;
 
+    @Enumerated(EnumType.STRING)
     private BookStatus status;
+
+    @SuppressWarnings("unused")
+    @Version
+    private Long version;
 
     private Book(AddBook addBook) {
         this.id = new BookId(UUID.randomUUID());
@@ -26,18 +46,6 @@ public class Book {
         this.title = addBook.title();
         this.isbn = addBook.isbn();
         this.status = BookStatus.AVAILABLE;
-    }
-
-    private Book(BookId id, Barcode inventoryNumber, String title, String isbn, BookStatus status) {
-        this.id = id;
-        this.inventoryNumber = inventoryNumber;
-        this.title = title;
-        this.isbn = isbn;
-        this.status = status;
-    }
-
-    public static Book toBook(BookId id, Barcode inventoryNumber, String title, String isbn, BookStatus status) {
-        return new Book(id, inventoryNumber, title, isbn, status);
     }
 
     public static Book addBook(AddBook command) {
@@ -58,6 +66,10 @@ public class Book {
     }
 
     public record Barcode(String barcode) implements ValueObject {
+
+        public static Barcode of(String barcode) {
+            return new Barcode(barcode);
+        }
     }
 
     public enum BookStatus implements ValueObject {
@@ -69,4 +81,5 @@ public class Book {
      */
     public record AddBook(Barcode barcode, String title, String isbn) {
     }
+
 }

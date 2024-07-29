@@ -11,11 +11,10 @@ import java.util.Optional;
 
 import example.borrow.application.CirculationDesk;
 import example.borrow.domain.Book;
-import example.borrow.domain.BookCheckedOut;
-import example.borrow.domain.BookPlacedOnHold;
 import example.borrow.domain.BookRepository;
 import example.borrow.domain.Hold;
-import example.borrow.domain.HoldEventPublisher;
+import example.borrow.domain.Hold.BookCheckedOut;
+import example.borrow.domain.Hold.BookPlacedOnHold;
 import example.borrow.domain.HoldRepository;
 import example.borrow.domain.Patron.PatronId;
 
@@ -37,12 +36,9 @@ class CirculationDeskTest {
     @Mock
     HoldRepository holdRepository;
 
-    @Mock
-    HoldEventPublisher publisher;
-
     @BeforeEach
     void setUp() {
-        circulationDesk = new CirculationDesk(bookRepository, holdRepository, publisher);
+        circulationDesk = new CirculationDesk(bookRepository, holdRepository);
     }
 
     @Test
@@ -52,7 +48,6 @@ class CirculationDeskTest {
         var hold = Hold.placeHold(command);
         when(bookRepository.findAvailableBook(any())).thenReturn(Optional.of(book));
         when(holdRepository.save(any())).thenReturn(hold);
-        when(publisher.holdPlaced(any(Hold.class))).thenReturn(hold);
 
         var holdDto = circulationDesk.placeHold(command);
 
@@ -82,7 +77,6 @@ class CirculationDeskTest {
 
         when(holdRepository.findById(any())).thenReturn(Optional.of(hold));
         when(holdRepository.save(any())).thenReturn(hold);
-        when(publisher.bookCheckedOut(any(Hold.class))).thenReturn(hold);
 
         var checkoutDto = circulationDesk.checkout(command);
         assertThat(checkoutDto.getHoldId()).isEqualTo(hold.getId().id().toString());
@@ -108,7 +102,7 @@ class CirculationDeskTest {
         book.markOnHold();
         when(bookRepository.findOnHoldBook(any())).thenReturn(Optional.of(book));
         when(bookRepository.save(any())).thenReturn(book);
-        BookCheckedOut event = new BookCheckedOut(book.getId().id(), book.getInventoryNumber().barcode(), LocalDate.now());
+        Hold.BookCheckedOut event = new BookCheckedOut(book.getId().id(), book.getInventoryNumber().barcode(), LocalDate.now());
 
         // Act
         circulationDesk.handle(event);

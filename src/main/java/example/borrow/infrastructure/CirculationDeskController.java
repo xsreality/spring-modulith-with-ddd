@@ -1,6 +1,5 @@
-package example.borrow.infrastructure.in.rest;
+package example.borrow.infrastructure;
 
-import org.jmolecules.architecture.hexagonal.PrimaryAdapter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,15 +12,14 @@ import java.util.UUID;
 
 import example.borrow.application.CheckoutDto;
 import example.borrow.application.CirculationDesk;
-import example.borrow.application.HoldDto;
+import example.borrow.application.HoldInformation;
 import example.borrow.domain.Book;
 import example.borrow.domain.Hold;
 import example.borrow.domain.Patron.PatronId;
-import example.useraccount.web.Authenticated;
 import example.useraccount.UserAccount;
+import example.useraccount.web.Authenticated;
 import lombok.RequiredArgsConstructor;
 
-@PrimaryAdapter
 @RestController
 @RequiredArgsConstructor
 public class CirculationDeskController {
@@ -29,7 +27,7 @@ public class CirculationDeskController {
     private final CirculationDesk circulationDesk;
 
     @PostMapping("/borrow/holds")
-    ResponseEntity<HoldDto> holdBook(@RequestBody HoldRequest request, @Authenticated UserAccount userAccount) {
+    ResponseEntity<HoldInformation> holdBook(@RequestBody HoldRequest request, @Authenticated UserAccount userAccount) {
         var command = new Hold.PlaceHold(new Book.Barcode(request.barcode()), LocalDate.now(), new PatronId(userAccount.email()));
         var holdDto = circulationDesk.placeHold(command);
         return ResponseEntity.ok(holdDto);
@@ -43,7 +41,7 @@ public class CirculationDeskController {
     }
 
     @GetMapping("/borrow/holds/{id}")
-    ResponseEntity<HoldDto> viewSingleHold(@PathVariable("id") UUID holdId) {
+    ResponseEntity<HoldInformation> viewSingleHold(@PathVariable("id") UUID holdId) {
         return circulationDesk.locate(holdId)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

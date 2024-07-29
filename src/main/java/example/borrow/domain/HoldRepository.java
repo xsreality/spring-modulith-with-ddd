@@ -1,13 +1,7 @@
 package example.borrow.domain;
 
-import org.jmolecules.architecture.hexagonal.SecondaryPort;
+import org.springframework.data.repository.CrudRepository;
 
-import java.util.Optional;
+public interface HoldRepository extends CrudRepository<Hold, Hold.HoldId> {
 
-@SecondaryPort
-public interface HoldRepository {
-
-    Hold save(Hold hold);
-
-    Optional<Hold> findById(Hold.HoldId id);
 }
