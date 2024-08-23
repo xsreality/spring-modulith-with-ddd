@@ -18,27 +18,26 @@ import lombok.extern.slf4j.Slf4j;
 public class CatalogManagement {
 
     private final CatalogRepository catalogRepository;
-    private final BookMapper mapper;
 
     /**
      * Add a new book to the library.
      */
     public BookDto addToCatalog(String title, CatalogBook.Barcode catalogNumber, String isbn, String authorName) {
         var book = new CatalogBook(title, catalogNumber, isbn, new CatalogBook.Author(authorName));
-        return mapper.toDto(catalogRepository.save(book));
+        return BookDto.from(catalogRepository.save(book));
     }
 
     @Transactional(readOnly = true)
     public Optional<BookDto> locate(Long id) {
         return catalogRepository.findById(id)
-                .map(mapper::toDto);
+                .map(BookDto::from);
     }
 
     @Transactional(readOnly = true)
     public List<BookDto> fetchBooks() {
         return catalogRepository.findAll()
                 .stream()
-                .map(mapper::toDto)
+                .map(BookDto::from)
                 .toList();
     }
 }
