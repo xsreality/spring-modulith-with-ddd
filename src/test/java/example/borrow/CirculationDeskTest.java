@@ -78,9 +78,9 @@ class CirculationDeskTest {
         when(holdRepository.findById(any())).thenReturn(Optional.of(hold));
         when(holdRepository.save(any())).thenReturn(hold);
 
-        var checkoutDto = circulationDesk.checkout(command);
-        assertThat(checkoutDto.getHoldId()).isEqualTo(hold.getId().id().toString());
-        assertThat(checkoutDto.getDateOfCheckout()).isNotNull();
+        var holdInformation = circulationDesk.checkout(command);
+        assertThat(holdInformation.getId()).isEqualTo(hold.getId().id().toString());
+        assertThat(holdInformation.getDateOfCheckout()).isNotNull();
     }
 
     @Test

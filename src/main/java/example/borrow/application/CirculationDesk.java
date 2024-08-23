@@ -40,7 +40,7 @@ public class CirculationDesk {
                 .map(HoldInformation::from);
     }
 
-    public CheckoutDto checkout(Hold.Checkout command) {
+    public HoldInformation checkout(Hold.Checkout command) {
         var hold = holds.findById(command.holdId())
                 .orElseThrow(() -> new IllegalArgumentException("Hold not found!"));
 
@@ -48,9 +48,10 @@ public class CirculationDesk {
             throw new IllegalArgumentException("Hold belongs to a different patron");
         }
 
-        return CheckoutDto.from(
+        return HoldInformation.from(
                 hold.checkout(command)
-                        .then(holds::save));
+                        .then(holds::save)
+        );
     }
 
     @ApplicationModuleListener

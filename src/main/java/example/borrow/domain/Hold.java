@@ -65,6 +65,7 @@ public class Hold extends AbstractAggregateRoot<Hold> {
 
     public Hold checkout(Checkout command) {
         this.dateOfCheckout = command.dateOfCheckout();
+        this.status = HoldStatus.ACTIVE;
         this.registerEvent(new BookCheckedOut(id.id(), onBook.barcode(), dateOfCheckout));
         return this;
     }

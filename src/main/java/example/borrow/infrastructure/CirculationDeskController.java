@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.UUID;
 
-import example.borrow.application.CheckoutDto;
 import example.borrow.application.CirculationDesk;
 import example.borrow.application.HoldInformation;
 import example.borrow.domain.Book;
@@ -34,10 +33,10 @@ public class CirculationDeskController {
     }
 
     @PostMapping("/borrow/holds/{id}/checkout")
-    ResponseEntity<CheckoutDto> checkoutBook(@PathVariable("id") UUID holdId, @Authenticated UserAccount userAccount) {
+    ResponseEntity<HoldInformation> checkoutBook(@PathVariable("id") UUID holdId, @Authenticated UserAccount userAccount) {
         var command = new Hold.Checkout(new Hold.HoldId(holdId), LocalDate.now(), new PatronId(userAccount.email()));
-        var checkoutDto = circulationDesk.checkout(command);
-        return ResponseEntity.ok(checkoutDto);
+        var hold = circulationDesk.checkout(command);
+        return ResponseEntity.ok(hold);
     }
 
     @GetMapping("/borrow/holds/{id}")

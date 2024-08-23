@@ -52,7 +52,9 @@ class CirculationDeskControllerIT {
                 .andExpect(jsonPath("$.id").exists())
                 .andExpect(jsonPath("$.bookBarcode", equalTo("64321704")))
                 .andExpect(jsonPath("$.patronId", equalTo("john.wick@continental.com")))
-                .andExpect(jsonPath("$.dateOfHold").exists());
+                .andExpect(jsonPath("$.dateOfHold").exists())
+                .andExpect(jsonPath("$.dateOfCheckout").isEmpty())
+                .andExpect(jsonPath("$.holdStatus", equalTo("HOLDING")));
     }
 
     @Test
@@ -60,8 +62,9 @@ class CirculationDeskControllerIT {
         mockMvc.perform(post("/borrow/holds/018dc74a-4830-75cf-a194-5e9815727b02/checkout")
                         .with(jwt().jwt(jwt -> jwt.claim("email", "john.wick@continental.com"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.holdId", equalTo("018dc74a-4830-75cf-a194-5e9815727b02")))
+                .andExpect(jsonPath("$.id", equalTo("018dc74a-4830-75cf-a194-5e9815727b02")))
                 .andExpect(jsonPath("$.patronId", equalTo("john.wick@continental.com")))
-                .andExpect(jsonPath("$.dateOfCheckout").exists());
+                .andExpect(jsonPath("$.dateOfCheckout").isNotEmpty())
+                .andExpect(jsonPath("$.holdStatus", equalTo("ACTIVE")));
     }
 }

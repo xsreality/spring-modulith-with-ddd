@@ -12,12 +12,16 @@ public class HoldInformation {
     private final String bookBarcode;
     private final String patronId;
     private final LocalDate dateOfHold;
+    private final LocalDate dateOfCheckout;
+    private final Hold.HoldStatus holdStatus;
 
-    private HoldInformation(String id, String bookBarcode, String patronId, LocalDate dateOfHold) {
+    private HoldInformation(String id, String bookBarcode, String patronId, LocalDate dateOfHold, LocalDate dateOfCheckout, Hold.HoldStatus holdStatus) {
         this.id = id;
         this.bookBarcode = bookBarcode;
         this.patronId = patronId;
         this.dateOfHold = dateOfHold;
+        this.dateOfCheckout = dateOfCheckout;
+        this.holdStatus = holdStatus;
     }
 
     public static HoldInformation from(Hold hold) {
@@ -25,6 +29,6 @@ public class HoldInformation {
                 hold.getId().id().toString(),
                 hold.getOnBook().barcode(),
                 hold.getHeldBy().email(),
-                hold.getDateOfHold());
+                hold.getDateOfHold(), hold.getDateOfCheckout(), hold.getStatus());
     }
 }
