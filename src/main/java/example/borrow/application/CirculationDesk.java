@@ -50,8 +50,32 @@ public class CirculationDesk {
 
         return HoldInformation.from(
                 hold.checkout(command)
-                        .then(holds::save)
-        );
+                        .then(holds::save));
+    }
+
+    public HoldInformation checkin(Hold.Checkin command) {
+        var hold = holds.findById(command.holdId())
+                .orElseThrow(() -> new IllegalArgumentException("Hold not found!"));
+
+        if (!hold.isCheckedOut()) {
+            throw new IllegalArgumentException("Book is not checked out");
+        }
+
+        if (!hold.isHeldBy(command.patronId())) {
+            throw new IllegalArgumentException("Hold belongs to a different patron");
+        }
+
+        return HoldInformation.from(
+                hold.checkin(command)
+                        .then(holds::save));
+    }
+
+    @ApplicationModuleListener
+    public void handle(Hold.BookCheckedIn event) {
+        books.findCheckedOutBook(new Book.Barcode(event.inventoryNumber()))
+                .map(Book::markAvailable)
+                .map(books::save)
+                .orElseThrow(() -> new IllegalArgumentException("Book not checked out?"));
     }
 
     @ApplicationModuleListener
