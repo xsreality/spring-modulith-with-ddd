@@ -14,7 +14,7 @@
 	<name>spring-modulith-with-ddd</name>
 	<description>Spring Modulith with DDD</description>
 	<properties>
-		<java.version>22</java.version>
+		<java.version>23</java.version>
 		<maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
 		<springdoc-openapi-starter-webmvc-ui.version>2.8.1</springdoc-openapi-starter-webmvc-ui.version>
 		<spring-modulith-bom.version>1.3.1</spring-modulith-bom.version>
@@ -160,7 +160,7 @@
 							<BPL_JAVA_NMT_ENABLED>false</BPL_JAVA_NMT_ENABLED>
 							<BP_SPRING_CLOUD_BINDINGS_DISABLED>true</BP_SPRING_CLOUD_BINDINGS_DISABLED>
 							<BP_JVM_CDS_ENABLED>true</BP_JVM_CDS_ENABLED>
-							<BP_JVM_VERSION>22</BP_JVM_VERSION>
+							<BP_JVM_VERSION>23</BP_JVM_VERSION>
 						</env>
 					</image>
 					<excludes>
