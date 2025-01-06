@@ -12,8 +12,8 @@ The code is explained in a series of blog posts.
 
 ## Project Requirements
 
-* JDK 22
-* Spring Boot 3.3
+* JDK 23
+* Spring Boot 3.4
 
 ## The Business Problem
 
