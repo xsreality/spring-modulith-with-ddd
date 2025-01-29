@@ -23,4 +23,8 @@ public interface BookRepository extends CrudRepository<Book, Book.BookId> {
 
     Optional<Book> findByInventoryNumber(Book.Barcode inventoryNumber);
 
+    @Query("""
+            SELECT b FROM Book b WHERE b.inventoryNumber = :inventoryNumber AND b.status = 'CHECKED_OUT'
+            """)
+    Optional<Book> findCheckedOutBook(Book.Barcode inventoryNumber);
 }
