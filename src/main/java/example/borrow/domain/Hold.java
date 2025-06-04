@@ -5,6 +5,7 @@ import org.jmolecules.event.annotation.DomainEvent;
 import org.springframework.data.domain.AbstractAggregateRoot;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.function.UnaryOperator;
 
@@ -43,6 +44,8 @@ public class Hold extends AbstractAggregateRoot<Hold> {
 
     private LocalDate dateOfCheckout;
 
+    private LocalDate dateOfCheckin;
+
     @Enumerated(EnumType.STRING)
     private HoldStatus status;
 
@@ -70,6 +73,12 @@ public class Hold extends AbstractAggregateRoot<Hold> {
         return this;
     }
 
+    public Hold checkin(Checkin command) {
+        this.status = HoldStatus.RETURNED;
+        this.dateOfCheckin = command.dateOfCheckin();
+        return this;
+    }
+
     public Hold then(UnaryOperator<Hold> function) {
         return function.apply(this);
     }
@@ -78,11 +87,15 @@ public class Hold extends AbstractAggregateRoot<Hold> {
         return this.heldBy.equals(patronId);
     }
 
+    public boolean isCheckedOut() {
+        return status == HoldStatus.ACTIVE;
+    }
+
     public record HoldId(UUID id) implements Identifier {
     }
 
     public enum HoldStatus {
-        HOLDING, ACTIVE, COMPLETED
+        HOLDING, ACTIVE, RETURNED
     }
 
     ///
@@ -95,6 +108,8 @@ public class Hold extends AbstractAggregateRoot<Hold> {
     public record Checkout(HoldId holdId, LocalDate dateOfCheckout, PatronId patronId) {
 
     }
+
+    public record Checkin(HoldId holdId, LocalDate dateOfCheckin, PatronId patronId) {}
 
     ///
     // Events
@@ -110,5 +125,11 @@ public class Hold extends AbstractAggregateRoot<Hold> {
     public record BookPlacedOnHold(UUID holdId,
                                    String inventoryNumber,
                                    LocalDate dateOfHold) {
+    }
+
+    @DomainEvent
+    public record BookCheckedIn(UUID holdId,
+                                String inventoryNumber,
+                                LocalDateTime dateOfCheckin) {
     }
 }
