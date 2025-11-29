@@ -13,7 +13,7 @@ import example.useraccount.KeycloakJwtAuthenticationConverter;
 public class LibraryWebSecurityConfiguration {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity security) {
 
         return security
                 .authorizeHttpRequests(http -> http
