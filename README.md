@@ -13,7 +13,7 @@ The code is explained in a series of blog posts.
 ## Project Requirements
 
 * JDK 23
-* Spring Boot 3.4
+* Spring Boot 4 (Spring Boot 3 version is available in branch [spring-boot-3](https://github.com/xsreality/spring-modulith-with-ddd/tree/spring-boot-3))
 
 ## The Business Problem
 
