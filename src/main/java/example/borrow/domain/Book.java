@@ -62,6 +62,11 @@ public class Book {
         return this;
     }
 
+    public Book markAvailable() {
+        this.status = BookStatus.AVAILABLE;
+        return this;
+    }
+
     public record BookId(UUID id) implements Identifier {
     }
 

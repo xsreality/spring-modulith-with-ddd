@@ -39,6 +39,13 @@ public class CirculationDeskController {
         return ResponseEntity.ok(hold);
     }
 
+    @PostMapping("/borrow/holds/{id}/checkin")
+    ResponseEntity<HoldInformation> checkinBook(@PathVariable("id") UUID holdId, @Authenticated UserAccount userAccount) {
+        var command = new Hold.Checkin(new Hold.HoldId(holdId), LocalDate.now(), new PatronId(userAccount.email()));
+        var hold = circulationDesk.checkin(command);
+        return ResponseEntity.ok(hold);
+    }
+
     @GetMapping("/borrow/holds/{id}")
     ResponseEntity<HoldInformation> viewSingleHold(@PathVariable("id") UUID holdId) {
         return circulationDesk.locate(holdId)

@@ -110,4 +110,45 @@ class CirculationDeskTest {
         // Assert
         assertThat(book.getStatus()).isEqualTo(ISSUED);
     }
+
+    @Test
+    void patronCanCheckinBook() {
+        // Arrange
+        var patronId = new PatronId("john.wick@continental.com");
+        var book = Book.addBook(new Book.AddBook(new Book.Barcode("12345"), "Test Book", "1234567890"));
+        var hold = Hold.placeHold(new Hold.PlaceHold(book.getInventoryNumber(), LocalDate.now(), patronId));
+        hold.checkout(new Hold.Checkout(hold.getId(), LocalDate.now(), patronId));
+
+        var checkinCommand = new Hold.Checkin(hold.getId(), LocalDate.now(), patronId);
+
+        when(holdRepository.findById(hold.getId())).thenReturn(Optional.of(hold));
+        when(holdRepository.save(any())).thenReturn(hold);
+
+        // Act
+        var holdInformation = circulationDesk.checkin(checkinCommand);
+
+        // Assert
+        assertThat(holdInformation.getId()).isEqualTo(hold.getId().id().toString());
+        assertThat(holdInformation.getDateOfCheckin()).isNotNull();
+        assertThat(hold.getStatus()).isEqualTo(Hold.HoldStatus.RETURNED);
+    }
+
+    @Test
+    void patronCannotCheckinBookHeldBySomeoneElse() {
+        // Arrange
+        var patronId = new PatronId("john.wick@continental.com");
+        var otherPatronId = new PatronId("winston@continental.com");
+        var book = Book.addBook(new Book.AddBook(new Book.Barcode("12345"), "Test Book", "1234567890"));
+        var hold = Hold.placeHold(new Hold.PlaceHold(book.getInventoryNumber(), LocalDate.now(), patronId));
+        hold.checkout(new Hold.Checkout(hold.getId(), LocalDate.now(), patronId));
+
+        var checkinCommand = new Hold.Checkin(hold.getId(), LocalDate.now(), otherPatronId);
+
+        when(holdRepository.findById(hold.getId())).thenReturn(Optional.of(hold));
+
+        // Act & Assert
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> circulationDesk.checkin(checkinCommand))
+                .withMessage("Hold belongs to a different patron");
+    }
 }

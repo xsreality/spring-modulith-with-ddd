@@ -67,4 +67,16 @@ class CirculationDeskControllerIT {
                 .andExpect(jsonPath("$.dateOfCheckout").isNotEmpty())
                 .andExpect(jsonPath("$.holdStatus", equalTo("ACTIVE")));
     }
+
+    @Test
+    void checkinBookRestCall() throws Exception {
+        mockMvc.perform(post("/borrow/holds/018dc74a-9c4e-743f-916f-e152f190d13e/checkin")
+                        .with(jwt().jwt(jwt -> jwt.claim("email", "john.wick@continental.com"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo("018dc74a-9c4e-743f-916f-e152f190d13e")))
+                .andExpect(jsonPath("$.bookBarcode", equalTo("55667788")))
+                .andExpect(jsonPath("$.patronId", equalTo("john.wick@continental.com")))
+                .andExpect(jsonPath("$.dateOfCheckin").isNotEmpty())
+                .andExpect(jsonPath("$.holdStatus", equalTo("RETURNED")));
+    }
 }
